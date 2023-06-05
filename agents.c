@@ -14,6 +14,7 @@ agent_t *agent_create(
         agent_t *a    = malloc(sizeof(agent_t));
         a->status     = status;
         a->params     = params;
+        a->h_previous = n_history;
         a->h_current  = 0;
         a->h_next     = 1;
         a->h_first    = 2;
@@ -122,68 +123,85 @@ void env_add_agent(env_t *e, agent_t *a) {
 
 
 /* Calculate derivative at a given point, multiplied with dt */
-static void diff(
+static void derivative(
         state_delta_t *target,
-        double T, double U, double V, double I, double Z,
+        double T, double U, double U_delay, double V, double I,
+        double W, double Z,
         double dt,
         params_t *params
 ) {
+        double v_external = params->eta * Z + W;
         target->dT = (
                 params->b
-                - params->k * V * T
+                - params->k * V * T / (1 + params->e1 * I)
                 - params->d * T
         ) * dt / params->epsilon;
         target->dU = (
-                params->k * V * T
+                params->k * V * T / (1 + params->e1 * I)
                 - params->q * U
         ) * dt / params->epsilon;
         target->dV = (
-                params->eta * Z
-                + params->p * U
+                ((v_external > params->v_infect)? v_external : 0)
+                + params->p * U / (1 + params->e2 * I)
                 - params->c * V
         ) * dt / params->epsilon;
-        target->dI = 0.0;
+        target->dI = (
+                params->r * U_delay
+                - params->f * I
+        ) * dt / params->epsilon;
 }
 
 
 void agent_step_calculate(agent_t *a, double dt) {
         state_delta_t hk1, hk2, hk3, hk4;
-        diff(
+        double U_approx = (
+                a->history[a->h_first].U
+                + a->history[(a->h_first + 1) % (a->n_history + 1)].U
+        ) / 2.0;
+        derivative(
                 &hk1,
                 a->state->T,
                 a->state->U,
+                a->history[a->h_first].U,
                 a->state->V,
                 a->state->I,
+                a->state->W,
                 a->environment->Z,
                 dt,
                 a->params
         );
-        diff(
+        derivative(
                 &hk2,
                 a->state->T     + hk1.dT / 2,
                 a->state->U     + hk1.dU / 2,
+                U_approx,
                 a->state->V     + hk1.dV / 2,
                 a->state->I     + hk1.dI / 2,
+                a->state->W,
                 a->environment->Z,
                 dt,
                 a->params
         );
-        diff(
+        derivative(
                 &hk3,
                 a->state->T     + hk2.dT / 2,
                 a->state->U     + hk2.dU / 2,
+                U_approx,
                 a->state->V     + hk2.dV / 2,
                 a->state->I     + hk2.dI / 2,
+                a->state->W,
                 a->environment->Z,
                 dt,
                 a->params
         );
-        diff(
+        derivative(
                 &hk4,
                 a->state->T     + hk3.dT,
                 a->state->U     + hk3.dU,
+                a->history[(a->h_first + 1) % (a->n_history + 1)].U,
                 a->state->V     + hk3.dV,
                 a->state->I     + hk3.dI,
+                a->state->W,
                 a->environment->Z,
                 dt,
                 a->params
@@ -194,22 +212,24 @@ void agent_step_calculate(agent_t *a, double dt) {
         a->history[a->h_next].U = a->state->U + (hk1.dU + 2 * hk2.dU + 2 * hk3.dU + hk4.dU) / 6;
         a->history[a->h_next].V = a->state->V + (hk1.dV + 2 * hk2.dV + 2 * hk3.dV + hk4.dV) / 6;
         a->history[a->h_next].I = a->state->I + (hk1.dI + 2 * hk2.dI + 2 * hk3.dI + hk4.dI) / 6;
+        a->history[a->h_next].W = a->state->W;
 }
 
 void agent_step(agent_t *a) {
-        a->h_current = a->h_next;
-        a->h_next    = a->h_first;
-        a->h_first   = (a->h_first + 1) % a->n_history;
-        a->state     = &(a->history[a->h_current]);
+        a->h_previous = a->h_current;
+        a->h_current  = a->h_next;
+        a->h_next     = a->h_first;
+        a->h_first    = (a->h_first + 1) % (a->n_history + 1);
+        a->state      = &(a->history[a->h_current]);
 }
 
 void env_step(env_t *e, double dt) {
         e->Z -= e->delta * e->Z * dt;
         for (int i = 0; i < e->n_agents; i++) {
                 if (e->agents[i]->status == INFECTED)
-                        e->Z += e->xi_I * dt;
-                else if (e->agents[i]->state->V > 0)
-                        e->Z += e->xi_E * dt;
+                        e->Z += e->xi_I * e->agents[i]->state->V * dt;
+                else
+                        e->Z += e->xi_E * e->agents[i]->state->V * dt;
                 /* e->Z += e->xi_I * e->agents[i]->state->V * dt; */
         }
 }

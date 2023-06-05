@@ -2,4 +2,5 @@
 *.o
 *.dat
 model
+gmon.out
 

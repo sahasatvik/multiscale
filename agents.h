@@ -13,6 +13,7 @@ typedef struct state {
         double U;       // Infected cells
         double V;       // Viral load
         double I;       // Immune response
+        double W;       // Contact viral load
 } state_t;
 
 typedef struct state_delta {
@@ -29,14 +30,22 @@ typedef struct params {
         double q;       // Death rate of infected cells
         double p;       // Production rate of viral cells
         double c;       // Clearance rate of viral cells
+        double r;       // Production rate of IFN
+        double f;       // Clearance rate of IFN
+
+        double e1;      // Inhibition of contact
+        double e2;      // Inhibition of viral production
 
         double eta;     // Transmission rate of virus from environment to host
+        double zeta;    // Proportion of viral load transferred during contact
 
         double alpha;   // Inverse of incubation period
         double gamma;   // Recovery rate
         double omega;   // Disease induced death rate
 
         double epsilon; // Scale parameter
+
+        double v_infect;// Minimum viral load to break barrier
 } params_t;
 
 typedef struct environment {
@@ -59,6 +68,7 @@ typedef struct agent {
         env_t    *environment;
 
         int n_history;
+        int h_previous; // Index of previous state
         int h_current;  // Index of current state
         int h_next;     // Index of next (future) state
         int h_first;    // Index of first (oldest) state in history

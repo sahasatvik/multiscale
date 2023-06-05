@@ -8,7 +8,8 @@
 #include "parameters.h"
 
 #define N_THREADS       4
-#define SHOW_EVERY      10
+#define SHOW_EVERY      ( 1 * STEPS_PER_DAY)
+#define STATUS_EVERY    (10 * STEPS_PER_DAY)
 
 #define MIN(a, b)       (((a) < (b)) ? (a) : (b))
 
@@ -42,14 +43,14 @@ void agents_randomize_contacts(double p) {
 
         for (int i = 0; i < N_AGENTS; i++) {
                 agents[i] = agent_create(
-                        SUSCEPTIBLE,                    // default status
-                        default_state,                  // default state
-                        &default_params,                // default parameters
-                        STEPS_PER_DAY,                  // keep a state history of one day
-                        (int) (N_AGENTS * p * (2 - p))  // pre-allocate memory for
-                                                        // ~ mean + 1 std contacts
+                        SUSCEPTIBLE,                            // default status
+                        default_state,                          // default state
+                        &default_params,                        // default parameters
+                        (int) (IFN_DELAY * STEPS_PER_DAY),      // keep a state history
+                        (int) (N_AGENTS * p * (2 - p))          // pre-allocate memory for
+                                                                // ~ mean + 1 std contacts
                 );
-                env_add_agent(environments[i % N_ENVS], agents[i]);
+                env_add_agent(environments[rand() % N_ENVS], agents[i]);
         }
 
         agents[0]->status = INFECTED;
@@ -86,9 +87,11 @@ void *step_calculate(void *args) {
                 /* Calculate infection spread via contact once per day */
                 if (!d->day)
                         continue;
+                agents[i]->history[agents[i]->h_next].W = 0.0;
                 for (int j = 0; j < agents[i]->n_contacts; j++) {
-                        if (agents[j]->status == INFECTED && bernoulli(P_INFECT * agents[i]->strengths[j])) {
-                                agents[i]->history[agents[i]->h_next].V += V_INFECT;
+                        if (bernoulli(P_INFECT * agents[i]->strengths[j])) {
+                                agents[i]->history[agents[i]->h_next].W +=
+                                        agents[j]->params->zeta * agents[j]->state->V;
                         }
                 }
         }
@@ -114,27 +117,42 @@ void *step(void *args) {
 
 void show(double t) {
         printf(
-                "%f %f %f %f %f ",
+                "%f %f %f %f %f %f %f ",
                 t,
                 agents[0]->state->T / default_state.T,
                 agents[0]->state->U / default_state.T,
                 agents[0]->state->V / V_INFECT,
+                (
+                        agents[0]->state->W
+                        + agents[0]->params->eta * agents[0]->environment->Z
+                ) / V_INFECT,
+                agents[0]->state->I,
                 agents[0]->environment->Z
         );
         printf(
-                "%f %f %f %f %f ",
+                "%f %f %f %f %f %f %f ",
                 t,
                 agents[1]->state->T / default_state.T,
                 agents[1]->state->U / default_state.T,
                 agents[1]->state->V / V_INFECT,
+                (
+                        agents[1]->state->W
+                        + agents[1]->params->eta * agents[1]->environment->Z
+                ) / V_INFECT,
+                agents[1]->state->I,
                 agents[1]->environment->Z
         );
         printf(
-                "%f %f %f %f %f ",
+                "%f %f %f %f %f %f %f ",
                 t,
                 agents[50]->state->T / default_state.T,
                 agents[50]->state->U / default_state.T,
                 agents[50]->state->V / V_INFECT,
+                (
+                        agents[50]->state->W
+                        + agents[50]->params->eta * agents[50]->environment->Z
+                ) / V_INFECT,
+                agents[50]->state->I,
                 agents[50]->environment->Z
         );
 
@@ -165,7 +183,11 @@ int main(int argc, const char *argv[]) {
         int steps = 0;
         for (double t = 0.0; t <= N_DAYS; t += TIME_STEP, steps += 1) {
                 /* Output data to stdout */
-                show(t);
+                if (steps % SHOW_EVERY == 0)
+                        show(t);
+                /* Output a brief status summary to stderr */
+                if (steps % STATUS_EVERY == 0)
+                        fprintf(stderr, "Day %d\n", steps / STEPS_PER_DAY);
 
                 /* Each thread deals with a subset of agents */
                 /* Calculate each agent's next state */
@@ -186,9 +208,6 @@ int main(int argc, const char *argv[]) {
                 /* Calculate and update each environment */
                 for (int i = 0; i < N_ENVS; i++)
                         env_step(environments[i], TIME_STEP);
-
-                if ((steps % (STEPS_PER_DAY * SHOW_EVERY)) == 0)
-                        fprintf(stderr, "Day %d\n", steps / STEPS_PER_DAY);
         }
 
         for (int i = 0; i < N_AGENTS; i++)
