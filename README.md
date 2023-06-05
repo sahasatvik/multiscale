@@ -19,7 +19,7 @@ Each agent $i$ has $T_i$ target cells, $`T^*_i`$ infected cells, $V_i$ viral cop
 \begin{align*}
 \frac{dT_i}{dt}   &= \frac{1}{\epsilon}\left( b - \frac{\kappa}{1 + \alpha A_i} V_iT_i - d\, T_i \right), \\
 \frac{dT^*_i}{dt} &= \frac{1}{\epsilon}\left( \frac{\kappa}{1 + \alpha A_i} V_iT_i - qT^*_i \right), \\
-\frac{dV_i}{dt}   &= \frac{1}{\epsilon}\left( h_i(\eta Z_j + W_i) + pT^*_i - cV_i - c_A A_iV_i \right),
+\frac{dV_i}{dt}   &= \frac{1}{\epsilon}\left( h_i(\eta Z_j + W_i) + pT^*_i - cV_i - c_A A_iV_i \right), \\
 \frac{dA_i}{dt}   &= \frac{1}{\epsilon}\left( b_A + \kappa_A A_i(t - \tau) V_i(t - \tau) - d_A\, A_i \right).
 \end{align*}
 ```
