@@ -19,7 +19,8 @@ agent_t *agent_create(
         a->h_next     = 1;
         a->h_first    = 2;
         a->history    = calloc(sizeof(state_t), n_history + 1);
-        a->history[0] = state;
+        for (int i = 0; i < n_history + 1; i++)
+                a->history[i] = state;
         a->state      = &(a->history[a->h_current]);
         a->n_history  = n_history;
         a->n_contacts = 0;
@@ -125,7 +126,8 @@ void env_add_agent(env_t *e, agent_t *a) {
 /* Calculate derivative at a given point, multiplied with dt */
 static void derivative(
         state_delta_t *target,
-        double T, double U, double U_delay, double V, double I,
+        double T, double U, double V, double A,
+        double V_delay, double A_delay,
         double W, double Z,
         double dt,
         params_t *params
@@ -133,38 +135,45 @@ static void derivative(
         double v_external = params->eta * Z + W;
         target->dT = (
                 params->b
-                - params->k * V * T / (1 + params->e1 * I)
+                - params->k * V * T / (1 + params->alpha * A)
                 - params->d * T
         ) * dt / params->epsilon;
         target->dU = (
-                params->k * V * T / (1 + params->e1 * I)
+                params->k * V * T / (1 + params->alpha * A)
                 - params->q * U
         ) * dt / params->epsilon;
         target->dV = (
                 ((v_external > params->v_infect)? v_external : 0)
-                + params->p * U / (1 + params->e2 * I)
+                + params->p * U
                 - params->c * V
+                - params->c_A * A * V
         ) * dt / params->epsilon;
-        target->dI = (
-                params->r * U_delay
-                - params->f * I
+        target->dA = (
+                params->b_A
+                + params->k_A * A_delay * V_delay
+                - params->d_A * A
         ) * dt / params->epsilon;
 }
 
 
 void agent_step_calculate(agent_t *a, double dt) {
         state_delta_t hk1, hk2, hk3, hk4;
-        double U_approx = (
-                a->history[a->h_first].U
-                + a->history[(a->h_first + 1) % (a->n_history + 1)].U
+        double V_approx = (
+                a->history[a->h_first].V
+                + a->history[(a->h_first + 1) % (a->n_history + 1)].V
+        ) / 2.0;
+        double A_approx = (
+                a->history[a->h_first].A
+                + a->history[(a->h_first + 1) % (a->n_history + 1)].A
         ) / 2.0;
         derivative(
                 &hk1,
                 a->state->T,
                 a->state->U,
-                a->history[a->h_first].U,
                 a->state->V,
-                a->state->I,
+                a->state->A,
+                a->history[a->h_first].V,
+                a->history[a->h_first].A,
                 a->state->W,
                 a->environment->Z,
                 dt,
@@ -174,9 +183,10 @@ void agent_step_calculate(agent_t *a, double dt) {
                 &hk2,
                 a->state->T     + hk1.dT / 2,
                 a->state->U     + hk1.dU / 2,
-                U_approx,
                 a->state->V     + hk1.dV / 2,
-                a->state->I     + hk1.dI / 2,
+                a->state->A     + hk1.dA / 2,
+                V_approx,
+                A_approx,
                 a->state->W,
                 a->environment->Z,
                 dt,
@@ -186,9 +196,10 @@ void agent_step_calculate(agent_t *a, double dt) {
                 &hk3,
                 a->state->T     + hk2.dT / 2,
                 a->state->U     + hk2.dU / 2,
-                U_approx,
                 a->state->V     + hk2.dV / 2,
-                a->state->I     + hk2.dI / 2,
+                a->state->A     + hk2.dA / 2,
+                V_approx,
+                A_approx,
                 a->state->W,
                 a->environment->Z,
                 dt,
@@ -198,9 +209,10 @@ void agent_step_calculate(agent_t *a, double dt) {
                 &hk4,
                 a->state->T     + hk3.dT,
                 a->state->U     + hk3.dU,
-                a->history[(a->h_first + 1) % (a->n_history + 1)].U,
                 a->state->V     + hk3.dV,
-                a->state->I     + hk3.dI,
+                a->state->A     + hk3.dA,
+                a->history[(a->h_first + 1) % (a->n_history + 1)].V,
+                a->history[(a->h_first + 1) % (a->n_history + 1)].A,
                 a->state->W,
                 a->environment->Z,
                 dt,
@@ -211,7 +223,7 @@ void agent_step_calculate(agent_t *a, double dt) {
         a->history[a->h_next].T = a->state->T + (hk1.dT + 2 * hk2.dT + 2 * hk3.dT + hk4.dT) / 6;
         a->history[a->h_next].U = a->state->U + (hk1.dU + 2 * hk2.dU + 2 * hk3.dU + hk4.dU) / 6;
         a->history[a->h_next].V = a->state->V + (hk1.dV + 2 * hk2.dV + 2 * hk3.dV + hk4.dV) / 6;
-        a->history[a->h_next].I = a->state->I + (hk1.dI + 2 * hk2.dI + 2 * hk3.dI + hk4.dI) / 6;
+        a->history[a->h_next].A = a->state->A + (hk1.dA + 2 * hk2.dA + 2 * hk3.dA + hk4.dA) / 6;
         a->history[a->h_next].W = a->state->W;
 }
 

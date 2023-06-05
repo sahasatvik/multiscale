@@ -8,8 +8,8 @@
 #include "parameters.h"
 
 #define N_THREADS       4
-#define SHOW_EVERY      ( 1 * STEPS_PER_DAY)
-#define STATUS_EVERY    (10 * STEPS_PER_DAY)
+#define SHOW_EVERY      2                       // skip steps in output
+#define STATUS_EVERY    (10 * STEPS_PER_DAY)    // show quick status
 
 #define MIN(a, b)       (((a) < (b)) ? (a) : (b))
 
@@ -46,7 +46,7 @@ void agents_randomize_contacts(double p) {
                         SUSCEPTIBLE,                            // default status
                         default_state,                          // default state
                         &default_params,                        // default parameters
-                        (int) (IFN_DELAY * STEPS_PER_DAY),      // keep a state history
+                        (int) (ABDY_DELAY * STEPS_PER_DAY),      // keep a state history
                         (int) (N_AGENTS * p * (2 - p))          // pre-allocate memory for
                                                                 // ~ mean + 1 std contacts
                 );
@@ -126,7 +126,7 @@ void show(double t) {
                         agents[0]->state->W
                         + agents[0]->params->eta * agents[0]->environment->Z
                 ) / V_INFECT,
-                agents[0]->state->I,
+                agents[0]->state->A,
                 agents[0]->environment->Z
         );
         printf(
@@ -139,7 +139,7 @@ void show(double t) {
                         agents[1]->state->W
                         + agents[1]->params->eta * agents[1]->environment->Z
                 ) / V_INFECT,
-                agents[1]->state->I,
+                agents[1]->state->A,
                 agents[1]->environment->Z
         );
         printf(
@@ -152,7 +152,7 @@ void show(double t) {
                         agents[50]->state->W
                         + agents[50]->params->eta * agents[50]->environment->Z
                 ) / V_INFECT,
-                agents[50]->state->I,
+                agents[50]->state->A,
                 agents[50]->environment->Z
         );
 

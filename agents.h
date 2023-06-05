@@ -12,7 +12,7 @@ typedef struct state {
         double T;       // Target cells
         double U;       // Infected cells
         double V;       // Viral load
-        double I;       // Immune response
+        double A;       // Immune response (antibodies)
         double W;       // Contact viral load
 } state_t;
 
@@ -20,7 +20,7 @@ typedef struct state_delta {
         double dT;
         double dU;
         double dV;
-        double dI;
+        double dA;
 } state_delta_t;
 
 typedef struct params {
@@ -30,18 +30,15 @@ typedef struct params {
         double q;       // Death rate of infected cells
         double p;       // Production rate of viral cells
         double c;       // Clearance rate of viral cells
-        double r;       // Production rate of IFN
-        double f;       // Clearance rate of IFN
+        double b_A;     // Generation rate of antibodies
+        double k_A;     // Production rate of antibodies
+        double d_A;     // Clearance rate of antibodies
 
-        double e1;      // Inhibition of contact
-        double e2;      // Inhibition of viral production
+        double alpha;   // Inhibition of contact
+        double c_A;     // Inhibition of viral production
 
         double eta;     // Transmission rate of virus from environment to host
         double zeta;    // Proportion of viral load transferred during contact
-
-        double alpha;   // Inverse of incubation period
-        double gamma;   // Recovery rate
-        double omega;   // Disease induced death rate
 
         double epsilon; // Scale parameter
 
