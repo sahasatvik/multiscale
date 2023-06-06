@@ -4,10 +4,11 @@
 
 Tweak parameters in `parameters.h`.
 
-```
+```sh
 make
-./model > model.dat
-./plot.p
+./gendata               # Generate random data (environments, contacts)
+./model > model.dat     # Run model, save data
+./plot.p                # Visualize
 ```
 
 _Note_: Plotting currently requires `gnuplot`.
