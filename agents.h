@@ -59,6 +59,8 @@ typedef struct environment {
 } env_t;
 
 typedef struct agent {
+        int id;
+
         status_t status;
         state_t  *state;
         params_t *params;
@@ -81,6 +83,7 @@ typedef struct agent {
 
 /* Create an agent, with given state and memory allocated for contacts */
 agent_t *agent_create(
+        int id,                 // Identification number
         status_t status,        // Initial status
         state_t  state,         // Initial state
         params_t *parameters,   // Parameters

@@ -23,50 +23,61 @@ int bernoulli(double p) {
         return rand() < (p * RAND_MAX);
 }
 
-/* Get a random index from 0 to max - 1 */
-int randindex(int max) {
-        return rand() % max;
-}
+/* Initialize agent and environment data from data files */
+void initialize_model() {
 
-/* Create randomized contacts, as an Erdos-Renyi random graph */
-void agents_randomize_contacts(double p) {
+        /* Load agent data */
+        FILE *netdata = fopen("network.dat", "r");
+        fscanf(netdata, "%*d\n");
+        for (int i = 0; i < N_AGENTS; i++) {
+                int m, n, j;
+                double s;
+                fscanf(netdata, "[%d, %d] : ", &n, &m);
+                agents[i] = agent_create(
+                        i,                                      // id
+                        SUSCEPTIBLE,                            // default status
+                        default_state,                          // default state
+                        &default_params,                        // default parameters
+                        (int) (ABDY_DELAY * STEPS_PER_DAY),     // keep a state history
+                        n
+                );
+                for (int l = 0; l < m; l++) {
+                        fscanf(netdata, "{%d %lf} ", &j, &s);
+                        agent_add_contact(
+                                agents[i],
+                                agents[j],
+                                s
+                        );
+                }
+        }
+        fclose(netdata);
 
-        for (int i = 0; i < N_ENVS; i++) {
-                environments[i] = env_create(
+        /* Infect a single agent */
+        agents[0]->status = INFECTED;
+        agents[0]->state->V = V_INFECT;
+
+
+        /* Load environment data */
+        FILE *envdata = fopen("environments.dat", "r");
+        fscanf(envdata, "%*d %*d\n");
+        for (int k = 0; k < N_ENVS; k++) {
+                int n, i;
+                fscanf(envdata, "[%d] : ", &n);
+                environments[k] = env_create(
                         default_environment.Z,
                         default_environment.xi_E,
                         default_environment.xi_I,
                         default_environment.delta,
-                        N_AGENTS / N_ENVS
+                        n
                 );
+                for (int l = 0; l < n; l++) {
+                        fscanf(envdata, "%d ", &i);
+                        env_add_agent(environments[k], agents[i]);
+                }
         }
-
-        for (int i = 0; i < N_AGENTS; i++) {
-                agents[i] = agent_create(
-                        SUSCEPTIBLE,                            // default status
-                        default_state,                          // default state
-                        &default_params,                        // default parameters
-                        (int) (ABDY_DELAY * STEPS_PER_DAY),      // keep a state history
-                        (int) (N_AGENTS * p * (2 - p))          // pre-allocate memory for
-                                                                // ~ mean + 1 std contacts
-                );
-                env_add_agent(environments[rand() % N_ENVS], agents[i]);
-        }
-
-        agents[0]->status = INFECTED;
-        agents[0]->state->V = V_INFECT;
-
-        /* Each edge has a probability p of appearing */
-        for (int i = 0; i < N_AGENTS; i++)
-                for (int j = 0; j < i; j++)
-                        if (bernoulli(p))
-                                agent_add_contact(
-                                        agents[i],
-                                        agents[j],
-                                        1.0
-                                        /* 1.0 / (MIN(i - j, N_ENVS - i + j) + 1) */
-                                );
+        fclose(envdata);
 }
+
 
 typedef struct {
         int start;
@@ -177,7 +188,7 @@ int main(int argc, const char *argv[]) {
         }
 
         /* Initialize agent states and contacts */
-        agents_randomize_contacts(P_GRAPH_EDGE);
+        initialize_model();
 
         /* Step through time */
         int steps = 0;

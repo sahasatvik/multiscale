@@ -2,5 +2,6 @@
 *.o
 *.dat
 model
+gendata
 gmon.out
 

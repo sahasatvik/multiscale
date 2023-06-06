@@ -5,6 +5,7 @@
 
 
 agent_t *agent_create(
+        int id,
         status_t status,
         state_t state,
         params_t *params,
@@ -12,6 +13,7 @@ agent_t *agent_create(
         int n_contacts_alloc
 ) {
         agent_t *a    = malloc(sizeof(agent_t));
+        a->id         = id;
         a->status     = status;
         a->params     = params;
         a->h_previous = n_history;
