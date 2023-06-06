@@ -13,7 +13,7 @@ make
 
 To visualize the progression of a single agent, tweak parameters in
 `oneagent.c`.
-```
+```sh
 ./oneagent > oneagent.dat
 ./oneagent.p
 ```
