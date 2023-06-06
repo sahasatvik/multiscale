@@ -1,7 +1,8 @@
 *.swp
 *.o
 *.dat
+*.out
 model
 gendata
-gmon.out
+oneagent
 

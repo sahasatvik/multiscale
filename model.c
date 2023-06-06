@@ -11,8 +11,6 @@
 #define SHOW_EVERY      2                       // skip steps in output
 #define STATUS_EVERY    (10 * STEPS_PER_DAY)    // show quick status
 
-#define MIN(a, b)       (((a) < (b)) ? (a) : (b))
-
 
 agent_t *agents[N_AGENTS];
 env_t   *environments[N_ENVS];
