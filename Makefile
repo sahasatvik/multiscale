@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-Wall -pthread -O3
 PROFILE=
-TARGETS=model gendata
+TARGETS=model gendata oneagent
 MAIN=
 OBJS=agents.o
 HEADERS=parameters.h
@@ -19,6 +19,10 @@ model : $(OBJS)
 gendata : TARGET=model
 gendata : MAIN=gendata.c
 gendata : $(OBJS)
+
+oneagent : TARGET=oneagent
+oneagent : MAIN=oneagent.c
+oneagent : $(OBJS)
 
 $(TARGET) : $(MAIN) $(OBJS) $(HEADERS)
 	$(CC) $(CFLAGS) $(PROFILE) -o $(TARGET) $(MAIN) $(OBJS)
