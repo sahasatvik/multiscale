@@ -11,6 +11,13 @@ make
 ./plot.p                # Visualize
 ```
 
+To visualize the progression of a single agent, tweak parameters in
+`oneagent.c`.
+```
+./oneagent > oneagent.dat
+./oneagent.p
+```
+
 _Note_: Plotting currently requires `gnuplot`.
 
 ## Description
