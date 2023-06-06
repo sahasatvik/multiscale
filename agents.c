@@ -19,8 +19,8 @@ agent_t *agent_create(
         a->h_previous = n_history;
         a->h_current  = 0;
         a->h_next     = 1;
-        a->h_first    = 2;
-        a->history    = calloc(sizeof(state_t), n_history + 1);
+        a->h_first    = 2 % (n_history + 1);
+        a->history    = calloc(n_history + 1, sizeof(state_t));
         for (int i = 0; i < n_history + 1; i++)
                 a->history[i] = state;
         a->state      = &(a->history[a->h_current]);
@@ -227,6 +227,11 @@ void agent_step_calculate(agent_t *a, double dt) {
         a->history[a->h_next].V = a->state->V + (hk1.dV + 2 * hk2.dV + 2 * hk3.dV + hk4.dV) / 6;
         a->history[a->h_next].A = a->state->A + (hk1.dA + 2 * hk2.dA + 2 * hk3.dA + hk4.dA) / 6;
         a->history[a->h_next].W = a->state->W;
+
+        if (a->history[a->h_next].U < EPSILON_COLLAPSE)
+                a->history[a->h_next].U = 0.0;
+        if (a->history[a->h_next].V < EPSILON_COLLAPSE)
+                a->history[a->h_next].V = 0.0;
 }
 
 void agent_step(agent_t *a) {

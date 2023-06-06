@@ -1,6 +1,10 @@
 #ifndef _AGENTS_H
 #define _AGENTS_H
 
+#ifndef EPSILON_COLLAPSE
+#define EPSILON_COLLAPSE        1e-6
+#endif
+
 
 typedef enum status {
         SUSCEPTIBLE,
