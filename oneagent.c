@@ -5,14 +5,11 @@
 #include "agents.h"
 
 
-#define N_DAYS           80     // Number of days simulated
+#define N_DAYS          180     // Number of days simulated
 #define STEPS_PER_DAY   100
 #define TIME_STEP       (1.0 / STEPS_PER_DAY)
 
 #define ABDY_DELAY      3e0     // Antibody response delay, in days
-
-#define INFECT_ON       (10 * STEPS_PER_DAY)
-                                // Infect the agent at specified time
 
 
 agent_t *agent;
@@ -23,19 +20,20 @@ state_t init_state = {
 };
 
 params_t params = {
-        .b     = 1e2,           // Generation rate of target cells
+        .b     = 1e+2,          // Generation rate of target cells
         .d     = 1e-2,          // Death rate of target cells
         .k     = 1e-5,          // Infection rate of target cells
         .q     = 2e+0,          // Death rate of infected cells
 
-        .p     = 12e0,          // Production rate of viral cells
-        .c     = 3e-1,          // Clearance rate of viral cells
+        .p     = 2e+1,          // Production rate of viral cells
+        .c     = 1e-1,          // Clearance rate of viral cells
 
-        .b_A   = 1e0,           // Generation rate of antibodies
-        .d_A   = 1e0,           // Clearance rate of antibodies
-        .k_A   = 3e-3,          // Production rate of antibodies
-        .alpha = 1e-2,          // Inhibition of contact
-        .c_A   = 1e-2,          // Clearance of viral cells due to antibodies
+        .b_A   = 2e-2,          // Generation rate of antibodies
+        .d_A   = 2e-2,          // Clearance rate of antibodies
+        .k_A   = 1e-4,          // Production rate of antibodies
+
+        .alpha = 5e-1,          // Inhibition of contact
+        .c_A   = 5e-2,          // Clearance of viral cells due to antibodies
 
         .epsilon = 2e-1,        // Scale parameter
 };
@@ -84,9 +82,10 @@ int main(int argc, const char *argv[]) {
                 agent_step_calculate(agent, TIME_STEP);
                 agent_step(agent);
 
-                /* Infect at scheduled time */
-                if (steps == INFECT_ON)
-                        agent->state->V += 1e-2;
+                /* Infect and reinfect at scheduled times */
+                if (steps == (10 * STEPS_PER_DAY)
+                 || steps == ((10 + 33) * STEPS_PER_DAY))
+                        agent->state->V += 1.0;
         }
 
         agent_free(agent);
