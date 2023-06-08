@@ -4,7 +4,6 @@ PROFILE=
 TARGETS=model gendata oneagent
 MAIN=
 OBJS=agents.o
-HEADERS=parameters.h
 
 all : $(TARGETS)
 
@@ -14,15 +13,15 @@ profile : $(TARGETS)
 
 model : TARGET=model
 model : MAIL=model.c
-model : $(OBJS) $(HEADERS)
+model : $(OBJS) parameters.h
 
 gendata : TARGET=model
 gendata : MAIN=gendata.c
-gendata : $(OBJS) $(HEADERS)
+gendata : $(OBJS) parameters.h
 
 oneagent : TARGET=oneagent
 oneagent : MAIN=oneagent.c
-oneagent : $(OBJS) $(HEADERS)
+oneagent : $(OBJS)
 
 $(TARGET) : $(MAIN) $(OBJS) $(HEADERS)
 	$(CC) $(CFLAGS) $(PROFILE) -o $(TARGET) $(MAIN) $(OBJS)
