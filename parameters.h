@@ -1,21 +1,25 @@
 #ifndef _PARAMETERS_H
 #define _PARAMETERS_H
 
+#include "agents.h"
 
-#define N_AGENTS        1000    // Number of agents
+
+#define N_AGENTS        10000   // Number of agents
 #define N_ENVS          100     // Number of environments
 
 #define N_DAYS          200     // Number of days simulated
 #define STEPS_PER_DAY   100
 #define TIME_STEP       (1.0 / STEPS_PER_DAY)
 
-#define P_INFECT        5e-3    // Probability of infection on contact
-#define P_GRAPH_EDGE    1e-2    // Probability of an edge between two agents appearing
+#define P_INFECT        4e-3    // Probability of infection on contact
+#define P_GRAPH_EDGE    1e-3    // Probability of an edge between two agents appearing
 
 #define V_INFECT        1e0     // Viral load barrier
 #define V_INFECTUOUS    (1e2 * V_INFECT)
 
-#define ABDY_DELAY      1e0     // Antibody response delay, in days
+#define A_RECOVERED     1e1     // Factor by which antibody level is raised in recovered
+
+#define ABDY_DELAY      3e0     // Antibody response delay, in days
 
 
 state_t default_state = {
@@ -27,25 +31,25 @@ state_t default_state = {
 };
 
 params_t default_params = {
-        .b     = 1e2,           // Generation rate of target cells
+        .b     = 1e+2,          // Generation rate of target cells
         .d     = 1e-2,          // Death rate of target cells
         .k     = 1e-5,          // Infection rate of target cells
         .q     = 2e+0,          // Death rate of infected cells
 
-        .p     = 12e0,          // Production rate of viral cells
-        .c     = 3e-1,          // Clearance rate of viral cells
+        .p     = 2e+1,          // Production rate of viral cells
+        .c     = 1e-1,          // Clearance rate of viral cells
 
-        .b_A   = 1e0,           // Generation rate of antibodies
-        .d_A   = 1e0,           // Clearance rate of antibodies
-        .k_A   = 5e-4,          // Production rate of antibodies
+        .b_A   = 2e-2,          // Generation rate of antibodies
+        .d_A   = 2e-2,          // Clearance rate of antibodies
+        .k_A   = 1e-4,          // Production rate of antibodies
 
-        .alpha = 1e-3,          // Inhibition of contact
-        .c_A   = 1e-2,          // Clearance of viral cells due to antibodies
+        .alpha = 5e-1,          // Inhibition of contact
+        .c_A   = 5e-2,          // Clearance of viral cells due to antibodies
 
-        .eta   = 5e-6,          // Transmission rate of virus from environment to host
-        .zeta  = 1e-2,          // Proportion of viral load transferred during contact
+        .epsilon = 2e-1,        // Scale parameter
 
-        .epsilon = 1e-1,        // Scale parameter
+        .eta   = 5e-7,          // Transmission rate of virus from environment to host
+        .zeta  = 5e-3,          // Proportion of viral load transferred during contact
 
         .v_infect = 1e0,        // Minimum viral load to break barrier
 };

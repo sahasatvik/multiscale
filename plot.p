@@ -32,7 +32,8 @@ unset logscale y
 
 set term qt 4
 plot "model.dat" using 1:22 title "Susceptible" with lines, \
-     "model.dat" using 1:23 title "Infected" with lines
+     "model.dat" using 1:23 title "Infected" with lines, \
+     "model.dat" using 1:24 title "Recovered" with lines
 
 set term qt 5
 plot "model.dat" using 1:($3/$2) title "Infected / Target 0" with lines, \

@@ -9,6 +9,7 @@
 typedef enum status {
         SUSCEPTIBLE,
         INFECTED,
+        RECOVERED,
         N_STATUS
 } status_t;
 

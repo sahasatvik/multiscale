@@ -116,8 +116,25 @@ void *step(void *args) {
         /* Loop through all assigned agents */
         for (int i = d->start; i < d->end; i++) {
                 agent_step(agents[i]);
-                if (agents[i]->state->V > V_INFECTUOUS)
-                        agents[i]->status = INFECTED;
+                switch (agents[i]->status) {
+                        case SUSCEPTIBLE:
+                                if (agents[i]->state->V > V_INFECTUOUS)
+                                        agents[i]->status = INFECTED;
+                                break;
+                        case INFECTED:
+                                if (agents[i]->state->V < 1e-3)
+                                        agents[i]->status = RECOVERED;
+                                break;
+                        case RECOVERED:
+                                if (agents[i]->state->V > V_INFECTUOUS)
+                                        agents[i]->status = INFECTED;
+                                else if (agents[i]->state->A < A_RECOVERED *
+                                        agents[i]->params->b_A / agents[i]->params->d_A)
+                                        agents[i]->status = SUSCEPTIBLE;
+                                break;
+                        default:
+                                break;
+                }
         }
 
         pthread_exit(NULL);
