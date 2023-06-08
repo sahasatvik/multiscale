@@ -1,14 +1,12 @@
 CC=gcc
 CFLAGS=-Wall -pthread -O3
-PROFILE=
 TARGETS=model gendata oneagent
 MAIN=
 OBJS=agents.o
 
 all : $(TARGETS)
 
-profile : clean
-profile : PROFILE=-pg
+profile : CFLAGS += -pg
 profile : $(TARGETS)
 
 model : TARGET=model
@@ -24,10 +22,10 @@ oneagent : MAIN=oneagent.c
 oneagent : $(OBJS)
 
 $(TARGET) : $(MAIN) $(OBJS) $(HEADERS)
-	$(CC) $(CFLAGS) $(PROFILE) -o $(TARGET) $(MAIN) $(OBJS)
+	$(CC) $(CFLAGS) -o $(TARGET) $(MAIN) $(OBJS)
 
 %.o : %.c %.h
-	$(CC) $(CFLAGS) $(PROFILE) -c $<
+	$(CC) $(CFLAGS) -c $<
 
 clean :
 	rm $(TARGETS) $(OBJS)
