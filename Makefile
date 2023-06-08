@@ -14,15 +14,15 @@ profile : $(TARGETS)
 
 model : TARGET=model
 model : MAIL=model.c
-model : $(OBJS)
+model : $(OBJS) $(HEADERS)
 
 gendata : TARGET=model
 gendata : MAIN=gendata.c
-gendata : $(OBJS)
+gendata : $(OBJS) $(HEADERS)
 
 oneagent : TARGET=oneagent
 oneagent : MAIN=oneagent.c
-oneagent : $(OBJS)
+oneagent : $(OBJS) $(HEADERS)
 
 $(TARGET) : $(MAIN) $(OBJS) $(HEADERS)
 	$(CC) $(CFLAGS) $(PROFILE) -o $(TARGET) $(MAIN) $(OBJS)
