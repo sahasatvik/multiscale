@@ -8,7 +8,8 @@
 #include "parameters.h"
 
 #define N_THREADS       4
-#define SHOW_EVERY      2                       // skip steps in output
+#define SHOW_EVERY      (STEPS_PER_DAY / 4)     // skip steps in output
+#define SHOW_N_AGENTS   3
 #define STATUS_EVERY    (10 * STEPS_PER_DAY)    // show quick status
 
 
@@ -141,54 +142,60 @@ void *step(void *args) {
         return NULL;
 }
 
+
+FILE *agentdata;
+FILE *countdata;
+FILE *averagedata;
+
 void show(double t) {
-        printf(
-                "%f %f %f %f %f %f %f ",
-                t,
-                agents[0]->state->T / default_state.T,
-                agents[0]->state->U / default_state.T,
-                agents[0]->state->V / V_INFECT,
-                (
-                        agents[0]->state->W
-                        + agents[0]->params->eta * agents[0]->environment->Z
-                ) / V_INFECT,
-                agents[0]->state->A,
-                agents[0]->environment->Z
-        );
-        printf(
-                "%f %f %f %f %f %f %f ",
-                t,
-                agents[1]->state->T / default_state.T,
-                agents[1]->state->U / default_state.T,
-                agents[1]->state->V / V_INFECT,
-                (
-                        agents[1]->state->W
-                        + agents[1]->params->eta * agents[1]->environment->Z
-                ) / V_INFECT,
-                agents[1]->state->A,
-                agents[1]->environment->Z
-        );
-        printf(
-                "%f %f %f %f %f %f %f ",
-                t,
-                agents[50]->state->T / default_state.T,
-                agents[50]->state->U / default_state.T,
-                agents[50]->state->V / V_INFECT,
-                (
-                        agents[50]->state->W
-                        + agents[50]->params->eta * agents[50]->environment->Z
-                ) / V_INFECT,
-                agents[50]->state->A,
-                agents[50]->environment->Z
-        );
+
+        fprintf(agentdata, "%f ", t);
+        for (int i = 0; i < SHOW_N_AGENTS; i++)
+                fprintf(
+                        agentdata,
+                        "%f %f %f %f %f ",
+                        agents[i]->state->T / default_state.T,
+                        agents[i]->state->U / default_state.T,
+                        agents[i]->state->V / V_INFECT,
+                        (
+                                agents[i]->state->W
+                                + agents[i]->params->eta * agents[i]->environment->Z
+                        ) / V_INFECT,
+                        agents[i]->state->A
+                        /* agents[i]->environment->Z */
+                );
+        fprintf(agentdata, "\n");
 
         int count[N_STATUS] = { 0 };
-        for (int i = 0; i < N_AGENTS; i++)
-                count[agents[i]->status]++;
-        for (int j = 0; j < N_STATUS; j++)
-                printf("%d ", count[j]);
 
-        printf("\n");
+        double T = 0.0;
+        double U = 0.0;
+        double V = 0.0;
+        double A = 0.0;
+
+        for (int i = 0; i < N_AGENTS; i++) {
+                count[agents[i]->status]++;
+
+                T += agents[i]->state->T;
+                U += agents[i]->state->U;
+                V += agents[i]->state->V;
+                A += agents[i]->state->A;
+        }
+
+        fprintf(countdata, "%f ", t);
+        for (int j = 0; j < N_STATUS; j++)
+                fprintf(countdata, "%d ", count[j]);
+        fprintf(countdata, "\n");
+
+        fprintf(
+                averagedata,
+                "%f %f %f %f %f \n",
+                t,
+                T / (N_AGENTS * default_state.T),
+                U / (N_AGENTS * default_state.T),
+                V / N_AGENTS,
+                A / N_AGENTS
+        );
 }
 
 int main(int argc, const char *argv[]) {
@@ -204,6 +211,10 @@ int main(int argc, const char *argv[]) {
 
         /* Initialize agent states and contacts */
         initialize_model();
+
+        agentdata   = fopen("agentdata.dat", "w");
+        countdata   = fopen("countdata.dat", "w");
+        averagedata = fopen("averagedata.dat", "w");
 
         /* Step through time */
         int steps = 0;
@@ -235,6 +246,10 @@ int main(int argc, const char *argv[]) {
                 for (int i = 0; i < N_ENVS; i++)
                         env_step(environments[i], TIME_STEP);
         }
+
+        fclose(agentdata);
+        fclose(countdata);
+        fclose(averagedata);
 
         for (int i = 0; i < N_AGENTS; i++)
                 agent_free(agents[i]);
