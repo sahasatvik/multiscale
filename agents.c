@@ -152,8 +152,8 @@ static void derivative(
         ) * dt / params->epsilon;
         target->dA = (
                 params->b_A
-                + params->k_A * A_delay * V_delay
                 - params->d_A * A
+                + params->k_A * A_delay * V_delay
         ) * dt / params->epsilon;
 }
 
