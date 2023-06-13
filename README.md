@@ -6,9 +6,9 @@ Tweak parameters in `parameters.h`.
 
 ```sh
 make
-./gendata               # Generate random data (environments, contacts)
-./model > model.dat     # Run model, save data
-./plot.p                # Visualize
+./gendata       # Generate random data (environments, contacts)
+./model         # Run model, save data
+./plot.p        # Visualize
 ```
 
 To visualize the progression of a single agent, tweak parameters in
