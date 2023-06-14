@@ -8,7 +8,7 @@
 #include "parameters.h"
 
 #define N_THREADS       4
-#define SHOW_EVERY      (STEPS_PER_DAY / 4)     // skip steps in output
+#define SHOW_EVERY      (STEPS_PER_DAY / 10)    // skip steps in output
 #define SHOW_N_AGENTS   3
 #define STATUS_EVERY    (10 * STEPS_PER_DAY)    // show quick status
 
@@ -146,6 +146,7 @@ void *step(void *args) {
 FILE *agentdata;
 FILE *countdata;
 FILE *averagedata;
+FILE *environmentdata;
 
 void show(double t) {
 
@@ -196,6 +197,11 @@ void show(double t) {
                 V / N_AGENTS,
                 A / N_AGENTS
         );
+
+        fprintf(environmentdata, "%f ", t);
+        for (int j = 0; j < N_ENVS; j++)
+                fprintf(environmentdata, "%f ", environments[j]->Z);
+        fprintf(environmentdata, "\n");
 }
 
 int main(int argc, const char *argv[]) {
@@ -212,9 +218,10 @@ int main(int argc, const char *argv[]) {
         /* Initialize agent states and contacts */
         initialize_model();
 
-        agentdata   = fopen("agentdata.dat", "w");
-        countdata   = fopen("countdata.dat", "w");
-        averagedata = fopen("averagedata.dat", "w");
+        agentdata       = fopen("agentdata.dat", "w");
+        countdata       = fopen("countdata.dat", "w");
+        averagedata     = fopen("averagedata.dat", "w");
+        environmentdata = fopen("environmentdata.dat", "w");
 
         /* Step through time */
         int steps = 0;
@@ -250,6 +257,7 @@ int main(int argc, const char *argv[]) {
         fclose(agentdata);
         fclose(countdata);
         fclose(averagedata);
+        fclose(environmentdata);
 
         for (int i = 0; i < N_AGENTS; i++)
                 agent_free(agents[i]);
