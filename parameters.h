@@ -12,7 +12,7 @@
 #define TIME_STEP       (1.0 / STEPS_PER_DAY)
 
 #define P_INFECT        4e-3    // Probability of infection on contact
-#define P_GRAPH_EDGE    1e-3    // Probability of an edge between two agents appearing
+#define P_GRAPH_EDGE    1e-2    // Probability of an edge between two agents appearing
 
 #define V_INFECT        1e0     // Viral load barrier
 #define V_INFECTUOUS    (1e2 * V_INFECT)
