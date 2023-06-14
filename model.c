@@ -26,7 +26,7 @@ int bernoulli(double p) {
 void initialize_model() {
 
         /* Load agent data */
-        FILE *netdata = fopen("network.dat", "r");
+        FILE *netdata = fopen("data/network.dat", "r");
         fscanf(netdata, "%*d\n");
         for (int i = 0; i < N_AGENTS; i++) {
                 int m, n, j;
@@ -57,7 +57,7 @@ void initialize_model() {
 
 
         /* Load environment data */
-        FILE *envdata = fopen("environments.dat", "r");
+        FILE *envdata = fopen("data/environments.dat", "r");
         fscanf(envdata, "%*d %*d\n");
         for (int k = 0; k < N_ENVS; k++) {
                 int n, i;
@@ -150,11 +150,11 @@ FILE *environmentdata;
 
 void show(double t) {
 
-        fprintf(agentdata, "%f ", t);
+        fprintf(agentdata, "%f, ", t);
         for (int i = 0; i < SHOW_N_AGENTS; i++)
                 fprintf(
                         agentdata,
-                        "%f %f %f %f %f ",
+                        "%f, %f, %f, %f, %f, ",
                         agents[i]->state->T / default_state.T,
                         agents[i]->state->U / default_state.T,
                         agents[i]->state->V / V_INFECT,
@@ -183,14 +183,14 @@ void show(double t) {
                 A += agents[i]->state->A;
         }
 
-        fprintf(countdata, "%f ", t);
+        fprintf(countdata, "%f, ", t);
         for (int j = 0; j < N_STATUS; j++)
-                fprintf(countdata, "%d ", count[j]);
+                fprintf(countdata, "%d, ", count[j]);
         fprintf(countdata, "\n");
 
         fprintf(
                 averagedata,
-                "%f %f %f %f %f \n",
+                "%f, %f, %f, %f, %f \n",
                 t,
                 T / (N_AGENTS * default_state.T),
                 U / (N_AGENTS * default_state.T),
@@ -198,9 +198,9 @@ void show(double t) {
                 A / N_AGENTS
         );
 
-        fprintf(environmentdata, "%f ", t);
+        fprintf(environmentdata, "%f, ", t);
         for (int j = 0; j < N_ENVS; j++)
-                fprintf(environmentdata, "%f ", environments[j]->Z);
+                fprintf(environmentdata, "%f, ", environments[j]->Z);
         fprintf(environmentdata, "\n");
 }
 
@@ -218,10 +218,24 @@ int main(int argc, const char *argv[]) {
         /* Initialize agent states and contacts */
         initialize_model();
 
-        agentdata       = fopen("agentdata.dat", "w");
-        countdata       = fopen("countdata.dat", "w");
-        averagedata     = fopen("averagedata.dat", "w");
-        environmentdata = fopen("environmentdata.dat", "w");
+        /* Open data files */
+        agentdata       = fopen("output/agentdata.dat", "w");
+        countdata       = fopen("output/countdata.dat", "w");
+        averagedata     = fopen("output/averagedata.dat", "w");
+        environmentdata = fopen("output/environmentdata.dat", "w");
+
+        /* Prepare data file headers */
+        fprintf(agentdata, "Time, ");
+        for (int i = 0; i < SHOW_N_AGENTS; i++)
+                fprintf(agentdata, "Target, Infected, Viral, \"Viral (External)\", Antibodies, ");
+        fprintf(agentdata, "\n");
+
+        fprintf(countdata, "Time, Susceptible, Infected, Recovered\n");
+        fprintf(averagedata, "Time, Target, Infected, Viral, \"Viral (External)\", Antibodies\n");
+        fprintf(environmentdata, "Time, ");
+        for (int j = 0; j < N_ENVS; j++)
+                fprintf(environmentdata, "Z_%d, ", j);
+        fprintf(environmentdata, "\n");
 
         /* Step through time */
         int steps = 0;

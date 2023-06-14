@@ -63,7 +63,7 @@ void agents_randomize_contacts(double p) {
 void write_data() {
 
         /* Save environment assignments */
-        FILE *envdata = fopen("environments.dat", "w");
+        FILE *envdata = fopen("data/environments.dat", "w");
         fprintf(envdata, "%d %d\n", N_AGENTS, N_ENVS);
         for (int k = 0; k < N_ENVS; k++) {
                 fprintf(envdata, "[%d] : ", environments[k]->n_agents);
@@ -74,7 +74,7 @@ void write_data() {
         fclose(envdata);
 
         /* Save contact network assignments */
-        FILE *netdata = fopen("network.dat", "w");
+        FILE *netdata = fopen("data/network.dat", "w");
         fprintf(netdata, "%d\n", N_AGENTS);
         for (int i = 0; i < N_AGENTS; i++) {
                 int m = 0;
