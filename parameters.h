@@ -7,12 +7,22 @@
 #define N_AGENTS        10000   // Number of agents
 #define N_ENVS          100     // Number of environments
 
-#define N_DAYS          200     // Number of days simulated
+typedef enum {
+        ERDOS_RENYI,
+        ALBERT_BARABASI
+} graph_methods;
+
+#define GRAPH_METHOD    ALBERT_BARABASI
+#define ER_GRAPH_P      1e-2    // Probability of an edge between two agents appearing
+#define AB_GRAPH_M      4       // Number of new edges created on vertex addition
+#define AB_GRAPH_M0     4       // Number of vertices in initial core
+
+#define N_DAYS          1000    // Number of days simulated
 #define STEPS_PER_DAY   100
 #define TIME_STEP       (1.0 / STEPS_PER_DAY)
 
 #define P_INFECT        4e-3    // Probability of infection on contact
-#define P_GRAPH_EDGE    1e-2    // Probability of an edge between two agents appearing
+
 
 #define V_INFECT        1e0     // Viral load barrier
 #define V_INFECTUOUS    (1e2 * V_INFECT)

@@ -13,7 +13,7 @@ model : TARGET=model
 model : MAIL=model.c
 model : $(OBJS) parameters.h
 
-gendata : TARGET=model
+gendata : TARGET=gendata
 gendata : MAIN=gendata.c
 gendata : $(OBJS) parameters.h
 
