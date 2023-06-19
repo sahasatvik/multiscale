@@ -4,33 +4,35 @@
 #include "agents.h"
 
 
+/* Set number of agents and environments in simulation */
 #define N_AGENTS        10000   // Number of agents
 #define N_ENVS          100     // Number of environments
 
+/* Set parameters for network generation */
 typedef enum {
         ERDOS_RENYI,
         ALBERT_BARABASI
 } graph_methods;
 
-#define GRAPH_METHOD    ALBERT_BARABASI
+#define GRAPH_METHOD    ERDOS_RENYI
 #define ER_GRAPH_P      1e-2    // Probability of an edge between two agents appearing
-#define AB_GRAPH_M      20      // Number of new edges created on vertex addition
-#define AB_GRAPH_M0     20      // Number of vertices in initial core
+#define AB_GRAPH_M      25      // Number of new edges created on vertex addition
+#define AB_GRAPH_M0     25      // Number of vertices in initial core
 
+/* Set simulation duration and time steps */
 #define N_DAYS          365     // Number of days simulated
 #define STEPS_PER_DAY   100
 #define TIME_STEP       (1.0 / STEPS_PER_DAY)
 
+/* Set probabilities, thresholds, delays */
 #define P_INFECT        4e-3    // Probability of infection on contact
-
-
 #define V_INFECT        1e0     // Viral load barrier
 #define V_INFECTUOUS    (1e2 * V_INFECT)
-
 #define A_RECOVERED     1e1     // Factor by which antibody level is raised in recovered
-
 #define ABDY_DELAY      3e0     // Antibody response delay, in days
 
+
+/* States and parameters for agents, environments */
 
 state_t default_state = {
         .T = 1e4,               // Target cells
