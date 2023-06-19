@@ -64,8 +64,7 @@ void initialize_model() {
                 fscanf(envdata, "[%d] : ", &n);
                 environments[k] = env_create(
                         default_environment.Z,
-                        default_environment.xi_E,
-                        default_environment.xi_I,
+                        default_environment.xi,
                         default_environment.delta,
                         n
                 );
@@ -231,7 +230,7 @@ int main(int argc, const char *argv[]) {
         fprintf(agentdata, "\n");
 
         fprintf(countdata, "Time, Susceptible, Infected, Recovered\n");
-        fprintf(averagedata, "Time, Target, Infected, Viral, \"Viral (External)\", Antibodies\n");
+        fprintf(averagedata, "Time, Target, Infected, Viral, Antibodies\n");
         fprintf(environmentdata, "Time, ");
         for (int j = 0; j < N_ENVS; j++)
                 fprintf(environmentdata, "Z_%d, ", j);

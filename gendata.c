@@ -71,8 +71,7 @@ void erdos_renyi(double p) {
         for (int k = 0; k < N_ENVS; k++) {
                 environments[k] = env_create(
                         default_environment.Z,
-                        default_environment.xi_E,
-                        default_environment.xi_I,
+                        default_environment.xi,
                         default_environment.delta,
                         N_AGENTS / N_ENVS
                 );
@@ -109,8 +108,7 @@ void albert_barabasi(int m, int m0) {
         for (int k = 0; k < N_ENVS; k++) {
                 environments[k] = env_create(
                         default_environment.Z,
-                        default_environment.xi_E,
-                        default_environment.xi_I,
+                        default_environment.xi,
                         default_environment.delta,
                         N_AGENTS / N_ENVS
                 );

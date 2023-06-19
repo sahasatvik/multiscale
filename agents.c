@@ -84,14 +84,13 @@ double agent_contact_strength(agent_t *current, agent_t *target) {
 
 env_t *env_create(
         double Z,
-        double xi_E, double xi_I, double delta,
+        double xi, double delta,
         int n_agents_alloc
 ) {
         env_t *e    = malloc(sizeof(env_t));
         e->n_agents = 0;
         e->Z        = Z;
-        e->xi_E     = xi_E;
-        e->xi_I     = xi_I;
+        e->xi       = xi;
         e->delta    = delta;
         e->agents   = malloc(n_agents_alloc * sizeof(agent_t *));
         e->n_agents_alloc = n_agents_alloc;
@@ -244,11 +243,6 @@ void agent_step(agent_t *a) {
 
 void env_step(env_t *e, double dt) {
         e->Z -= e->delta * e->Z * dt;
-        for (int i = 0; i < e->n_agents; i++) {
-                if (e->agents[i]->status == INFECTED)
-                        e->Z += e->xi_I * e->agents[i]->state->V * dt;
-                else
-                        e->Z += e->xi_E * e->agents[i]->state->V * dt;
-                /* e->Z += e->xi_I * e->agents[i]->state->V * dt; */
-        }
+        for (int i = 0; i < e->n_agents; i++)
+                e->Z += e->xi * e->agents[i]->state->V * dt;
 }

@@ -56,8 +56,7 @@ typedef struct environment {
 
         double Z;       // Viral concentration
 
-        double xi_E;    // Viral release rate from pre-symptomatic
-        double xi_I;    // Viral release rate from symptomatic
+        double xi;      // Viral release rate
         double delta;   // Viral removal rate
 
         int n_agents_alloc;
@@ -122,8 +121,7 @@ void agent_step(agent_t *agent);
 /* Create an environment, with given state and memory allocated for agents */
 env_t *env_create(
         double Z,               // Initial viral load
-        double xi_E,            // Viral release rate from pre-symptomatic
-        double xi_I,            // Viral release rate from symptomatic
+        double xi,              // Viral release rate
         double delta,           // Viral removal rate
         int n_agents_alloc      // Number of agents to pre-allocate memory for
 );

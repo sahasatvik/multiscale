@@ -14,10 +14,10 @@ typedef enum {
 
 #define GRAPH_METHOD    ALBERT_BARABASI
 #define ER_GRAPH_P      1e-2    // Probability of an edge between two agents appearing
-#define AB_GRAPH_M      4       // Number of new edges created on vertex addition
-#define AB_GRAPH_M0     4       // Number of vertices in initial core
+#define AB_GRAPH_M      20      // Number of new edges created on vertex addition
+#define AB_GRAPH_M0     20      // Number of vertices in initial core
 
-#define N_DAYS          1000    // Number of days simulated
+#define N_DAYS          365     // Number of days simulated
 #define STEPS_PER_DAY   100
 #define TIME_STEP       (1.0 / STEPS_PER_DAY)
 
@@ -67,8 +67,7 @@ params_t default_params = {
 env_t default_environment = {
         .Z = 0.0,               // Initial viral concentration
 
-        .xi_E  = 2.3,           // Viral release rate from pre-symptomatic
-        .xi_I  = 1.5,           // Viral release rate from symptomatic
+        .xi    = 1.5,           // Viral release rate
         .delta = 1.0,           // Viral removal rate
 };
 
