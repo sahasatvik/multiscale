@@ -20,6 +20,9 @@ To visualize the progression of a single agent, tweak parameters in
 
 _Note_: Plotting currently requires `gnuplot`.
 
+Visualize the degree distribution of the generated network using
+`./degree_distribution.R`, and see `degree_distribution.pdf`.
+
 ## Description
 
 Each agent $i$ has $T_i$ target cells, $`T^*_i`$ infected cells, $V_i$ viral copies, and $A_i$ antibodies. Each agent belongs to some environment $j$, with $Z_j$ viral copies. These evolve as
