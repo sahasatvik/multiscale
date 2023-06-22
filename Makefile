@@ -1,8 +1,8 @@
 CC=gcc
-CFLAGS=-Wall -pthread -O3
-TARGETS=model gendata oneagent
+CFLAGS=-Wall -pthread -O3 -lm
+TARGETS=model gendata oneagent reinfection
 MAIN=
-OBJS=agents.o
+OBJS=agents.o random.o
 
 all : $(TARGETS)
 
@@ -10,7 +10,7 @@ profile : CFLAGS += -pg
 profile : $(TARGETS)
 
 model : TARGET=model
-model : MAIL=model.c
+model : MAIN=model.c
 model : $(OBJS) parameters.h
 
 gendata : TARGET=gendata
@@ -20,6 +20,11 @@ gendata : $(OBJS) parameters.h
 oneagent : TARGET=oneagent
 oneagent : MAIN=oneagent.c
 oneagent : $(OBJS)
+
+reinfection : TARGET=reinfection
+reinfection : MAIN=reinfection.c
+reinfection : $(OBJS)
+
 
 $(TARGET) : $(MAIN) $(OBJS) $(HEADERS)
 	$(CC) $(CFLAGS) -o $(TARGET) $(MAIN) $(OBJS)

@@ -1,7 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 
 #include "agents.h"
+#include "random.h"
 
 
 agent_t *agent_create(
@@ -227,9 +229,10 @@ void agent_step_calculate(agent_t *a, double dt) {
         a->history[a->h_next].A = a->state->A + (hk1.dA + 2 * hk2.dA + 2 * hk3.dA + hk4.dA) / 6;
         a->history[a->h_next].W = a->state->W;
 
-        if (a->history[a->h_next].U < EPSILON_COLLAPSE)
-                a->history[a->h_next].U = 0.0;
-        if (a->history[a->h_next].V < EPSILON_COLLAPSE)
+        double c = random_exponential(a->params->c);
+        a->history[a->h_next].V += -c * dt / a->params->epsilon;
+
+        if (a->history[a->h_next].V < 0.0)
                 a->history[a->h_next].V = 0.0;
 }
 

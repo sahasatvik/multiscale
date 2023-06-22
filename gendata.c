@@ -5,6 +5,7 @@
 
 #include "agents.h"
 #include "parameters.h"
+#include "random.h"
 
 
 agent_t *agents[N_AGENTS];
@@ -13,20 +14,6 @@ env_t   *environments[N_ENVS];
 double weights[N_AGENTS];
 int    choices[N_AGENTS];
 
-/* Flip a biased coin */
-int bernoulli(double p) {
-        return rand() < (p * RAND_MAX);
-}
-
-/* Get a random index from 0 to max - 1 */
-int randindex(int max) {
-        return rand() % max;
-}
-
-/* Get a uniformly random number from [0, 1] */
-double uniform() {
-        return (double) rand() / (double) RAND_MAX;
-}
 
 /* Choose k indices from n, with or without repetition, according to
    supplied weights */
@@ -48,9 +35,9 @@ void choose(int n, int k, bool repeat, double *weights, int *choices) {
                 do {
                         /* Generate a random number, translate to
                            (weighted) random index */
-                        double x = uniform();
+                        double u = random_uniform();
                         for (int i = 0; i < n; i++) {
-                                if (x <= cdf[i]) {
+                                if (u <= cdf[i]) {
                                         choice = i;
                                         break;
                                 }
@@ -87,14 +74,14 @@ void erdos_renyi(double p) {
                         (int) (N_AGENTS * p * (2 - p))          // pre-allocate memory for
                                                                 // ~ mean + 1 std contacts
                 );
-                env_add_agent(environments[randindex(N_ENVS)], agents[i]);
+                env_add_agent(environments[random_index(N_ENVS)], agents[i]);
         }
 
 
         /* Each edge in the contact network has a probability p of appearing */
         for (int i = 0; i < N_AGENTS; i++)
                 for (int j = 0; j < i; j++)
-                        if (bernoulli(p))
+                        if (random_bernoulli(p))
                                 agent_add_contact(
                                         agents[i],
                                         agents[j],
@@ -123,7 +110,7 @@ void albert_barabasi(int m, int m0) {
                         (int) (ABDY_DELAY * STEPS_PER_DAY),     // keep a state history
                         m * m
                 );
-                env_add_agent(environments[randindex(N_ENVS)], agents[i]);
+                env_add_agent(environments[random_index(N_ENVS)], agents[i]);
         }
 
         /* Initial complete core of m0 vertices */

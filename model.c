@@ -6,6 +6,7 @@
 
 #include "agents.h"
 #include "parameters.h"
+#include "random.h"
 
 #define N_THREADS       4
 #define SHOW_EVERY      (STEPS_PER_DAY / 10)    // skip steps in output
@@ -16,11 +17,6 @@
 agent_t *agents[N_AGENTS];
 env_t   *environments[N_ENVS];
 
-
-/* Flip a biased coin */
-int bernoulli(double p) {
-        return rand() < (p * RAND_MAX);
-}
 
 /* Initialize agent and environment data from data files */
 void initialize_model() {
@@ -98,7 +94,7 @@ void *step_calculate(void *args) {
                         continue;
                 agents[i]->history[agents[i]->h_next].W = 0.0;
                 for (int j = 0; j < agents[i]->n_contacts; j++) {
-                        if (bernoulli(P_INFECT * agents[i]->strengths[j])) {
+                        if (random_bernoulli(P_INFECT * agents[i]->strengths[j])) {
                                 agents[i]->history[agents[i]->h_next].W +=
                                         agents[j]->params->zeta * agents[j]->state->V;
                         }

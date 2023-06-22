@@ -6,12 +6,14 @@
 #include "agents.h"
 
 
+#define N_RUNS  1000
+#define N_SHOW  5
+
 #define N_DAYS          120     // Number of days simulated
 #define STEPS_PER_DAY   10
 #define TIME_STEP       (1.0 / STEPS_PER_DAY)
 
 #define ABDY_DELAY      3e0     // Antibody response delay, in days
-
 
 agent_t *agent;
 env_t *environment;
@@ -70,22 +72,23 @@ void show(double t) {
         );
 }
 
-bool run_model() {
+bool run_model(double delay, bool showrun) {
 
         double max_V = 0.0;
 
         int steps = 0;
         for (double t = 0.0; t <= N_DAYS; t += TIME_STEP, steps += 1) {
-                show(t);
+                if (showrun)
+                        show(t);
 
                 agent_step_calculate(agent, TIME_STEP);
                 agent_step(agent);
 
                 /* Infect and reinfect at scheduled times */
                 if (steps == (10 * STEPS_PER_DAY)
-                 || steps == ((10 + 48) * STEPS_PER_DAY))
+                 || steps == ((int) ((10 + delay) * STEPS_PER_DAY)))
                         agent->state->V += 1.0;
-                if (steps > ((10 + 48) * STEPS_PER_DAY)
+                if (steps > ((10 + delay) * STEPS_PER_DAY)
                  && agent->state->V > max_V)
                         max_V = agent->state->V;
         }
@@ -98,14 +101,26 @@ void free_model() {
         env_free(environment);
 }
 
-
 int main(int argc, const char *argv[]) {
 
         srand(time(NULL));
 
-        initialize_model();
-        run_model();
-        free_model();
+        for (double delay = 40; delay <= 60; delay += 0.1) {
+
+                int reinfected = 0;
+                for (int run = 0; run < N_RUNS; run++) {
+                        initialize_model();
+                        reinfected += run_model(delay, (run % (N_RUNS / N_SHOW)) == 0);
+                        free_model();
+                }
+
+                fprintf(
+                        stderr,
+                        "%6.2f %f\n",
+                        delay,
+                        (double) reinfected / N_RUNS
+                );
+        }
 
         return 0;
 }
