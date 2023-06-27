@@ -229,7 +229,7 @@ void agent_step_calculate(agent_t *a, double dt) {
         a->history[a->h_next].A = a->state->A + (hk1.dA + 2 * hk2.dA + 2 * hk3.dA + hk4.dA) / 6;
         a->history[a->h_next].W = a->state->W;
 
-        double c = random_exponential(a->params->c);
+        double c = random_exponential(a->params->lambdai);
         a->history[a->h_next].V += -c * dt / a->params->epsilon;
 
         if (a->history[a->h_next].V < 0.0)

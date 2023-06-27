@@ -16,11 +16,11 @@ typedef enum {
 
 #define GRAPH_METHOD    ERDOS_RENYI
 #define ER_GRAPH_P      1e-2    // Probability of an edge between two agents appearing
-#define AB_GRAPH_M      25      // Number of new edges created on vertex addition
-#define AB_GRAPH_M0     25      // Number of vertices in initial core
+#define AB_GRAPH_M      10      // Number of new edges created on vertex addition
+#define AB_GRAPH_M0     10      // Number of vertices in initial core
 
 /* Set simulation duration and time steps */
-#define N_DAYS          365     // Number of days simulated
+#define N_DAYS          200     // Number of days simulated
 #define STEPS_PER_DAY   100
 #define TIME_STEP       (1.0 / STEPS_PER_DAY)
 
@@ -64,6 +64,7 @@ params_t default_params = {
         .zeta  = 5e-3,          // Proportion of viral load transferred during contact
 
         .v_infect = 1e0,        // Minimum viral load to break barrier
+        .lambdai  = 4e-1,       // Mean viral load loss
 };
 
 env_t default_environment = {

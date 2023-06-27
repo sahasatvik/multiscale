@@ -48,6 +48,7 @@ typedef struct params {
         double epsilon; // Scale parameter
 
         double v_infect;// Minimum viral load to break barrier
+        double lambdai; // Mean viral load loss
 } params_t;
 
 typedef struct environment {

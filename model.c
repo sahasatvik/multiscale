@@ -47,11 +47,6 @@ void initialize_model() {
         }
         fclose(netdata);
 
-        /* Infect a single agent */
-        agents[0]->status = INFECTED;
-        agents[0]->state->V = V_INFECT;
-
-
         /* Load environment data */
         FILE *envdata = fopen("data/environments.dat", "r");
         fscanf(envdata, "%*d %*d\n");
@@ -70,6 +65,15 @@ void initialize_model() {
                 }
         }
         fclose(envdata);
+
+        /* Infect a single agent */
+        agents[0]->status = INFECTED;
+        for (double t = 0.0; t <= 1.0; t += TIME_STEP) {
+                agents[0]->state->W = 10.0;
+                agent_step_calculate(agents[0], TIME_STEP);
+                agent_step(agents[0]);
+        }
+        agents[0]->state->W = 0.0;
 }
 
 

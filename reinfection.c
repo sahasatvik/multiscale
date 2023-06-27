@@ -39,6 +39,7 @@ params_t params = {
         .alpha = 5e-1,          // Inhibition of contact
         .c_A   = 5e-2,          // Clearance of viral cells due to antibodies
 
+        .lambdai = 4e-1,        // Mean viral load loss
         .epsilon = 2e-1,        // Scale parameter
 };
 
@@ -87,13 +88,17 @@ bool run_model(double delay, bool showrun) {
                 /* Infect and reinfect at scheduled times */
                 if (steps == (10 * STEPS_PER_DAY)
                  || steps == ((int) ((10 + delay) * STEPS_PER_DAY)))
-                        agent->state->V += 1.0;
+                        agent->state->W = 1.0;
+                if (steps == ((10 + 1) * STEPS_PER_DAY)
+                 || steps == ((int) ((10 + delay + 1) * STEPS_PER_DAY)))
+                        agent->state->W = 0.0;
+
                 if (steps > ((10 + delay) * STEPS_PER_DAY)
                  && agent->state->V > max_V)
                         max_V = agent->state->V;
         }
 
-        return max_V > 10.0;
+        return max_V > 100.0;
 }
 
 void free_model() {
@@ -105,7 +110,7 @@ int main(int argc, const char *argv[]) {
 
         srand(time(NULL));
 
-        for (double delay = 40; delay <= 60; delay += 0.1) {
+        for (double delay = 44; delay <= 54; delay += 0.2) {
 
                 int reinfected = 0;
                 for (int run = 0; run < N_RUNS; run++) {
