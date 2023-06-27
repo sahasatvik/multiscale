@@ -65,7 +65,7 @@ void show(double t) {
                 "%f %f %f %f %f\n",
                 t,
                 agent->state->T / init_state.T,
-                agent->state->U / init_state.T,
+                agent->state->I / init_state.T,
                 agent->state->V,
                 agent->state->A
         );

@@ -155,7 +155,7 @@ void show(double t) {
                         agentdata,
                         "%f, %f, %f, %f, %f, ",
                         agents[i]->state->T / default_state.T,
-                        agents[i]->state->U / default_state.T,
+                        agents[i]->state->I / default_state.T,
                         agents[i]->state->V / V_INFECT,
                         (
                                 agents[i]->state->W
@@ -169,7 +169,7 @@ void show(double t) {
         int count[N_STATUS] = { 0 };
 
         double T = 0.0;
-        double U = 0.0;
+        double I = 0.0;
         double V = 0.0;
         double A = 0.0;
 
@@ -177,7 +177,7 @@ void show(double t) {
                 count[agents[i]->status]++;
 
                 T += agents[i]->state->T;
-                U += agents[i]->state->U;
+                I += agents[i]->state->I;
                 V += agents[i]->state->V;
                 A += agents[i]->state->A;
         }
@@ -192,7 +192,7 @@ void show(double t) {
                 "%f, %f, %f, %f, %f \n",
                 t,
                 T / (N_AGENTS * default_state.T),
-                U / (N_AGENTS * default_state.T),
+                I / (N_AGENTS * default_state.T),
                 V / N_AGENTS,
                 A / N_AGENTS
         );

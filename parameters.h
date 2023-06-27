@@ -36,7 +36,7 @@ typedef enum {
 
 state_t default_state = {
         .T = 1e4,               // Target cells
-        .U = 0.0,               // Infected cells
+        .I = 0.0,               // Infected cells
         .V = 0.0,               // Viral load
         .A = 1.0,               // Immune response (antibodies)
         .W = 0.0,               // Contact viral load

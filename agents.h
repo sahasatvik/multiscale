@@ -15,7 +15,7 @@ typedef enum status {
 
 typedef struct state {
         double T;       // Target cells
-        double U;       // Infected cells
+        double I;       // Infected cells
         double V;       // Viral load
         double A;       // Immune response (antibodies)
         double W;       // Contact viral load
@@ -23,7 +23,7 @@ typedef struct state {
 
 typedef struct state_delta {
         double dT;
-        double dU;
+        double dI;
         double dV;
         double dA;
 } state_delta_t;
