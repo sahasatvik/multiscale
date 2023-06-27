@@ -48,15 +48,15 @@ params_t default_params = {
         .k     = 1e-5,          // Infection rate of target cells
         .q     = 2e+0,          // Death rate of infected cells
 
-        .p     = 2e+1,          // Production rate of viral cells
-        .c     = 1e-1,          // Clearance rate of viral cells
+        .p     = 2e+1,          // Production rate of viral copies
+        .c     = 1e-1,          // Clearance rate of viral copies
 
         .b_A   = 2e-2,          // Generation rate of antibodies
         .d_A   = 2e-2,          // Clearance rate of antibodies
         .k_A   = 1e-4,          // Production rate of antibodies
 
         .alpha = 5e-1,          // Inhibition of contact
-        .c_A   = 5e-2,          // Clearance of viral cells due to antibodies
+        .c_A   = 5e-2,          // Clearance of viral copies due to antibodies
 
         .epsilon = 2e-1,        // Scale parameter
 

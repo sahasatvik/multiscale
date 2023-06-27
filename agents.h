@@ -33,14 +33,14 @@ typedef struct params {
         double d;       // Death rate of target cells
         double k;       // Infection rate of target cells
         double q;       // Death rate of infected cells
-        double p;       // Production rate of viral cells
-        double c;       // Clearance rate of viral cells
+        double p;       // Production rate of viral copies
+        double c;       // Clearance rate of viral copies
         double b_A;     // Generation rate of antibodies
         double k_A;     // Production rate of antibodies
         double d_A;     // Clearance rate of antibodies
 
         double alpha;   // Inhibition of contact
-        double c_A;     // Inhibition of viral production
+        double c_A;     // Clearance rate of viral copies due to antibodies
 
         double eta;     // Transmission rate of virus from environment to host
         double zeta;    // Proportion of viral load transferred during contact
