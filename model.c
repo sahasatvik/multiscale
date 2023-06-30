@@ -109,6 +109,8 @@ void *step_calculate(void *args) {
         return NULL;
 }
 
+_Atomic int newI;
+
 void *step(void *args) {
 
         thread_data_t *d = (thread_data_t *) args;
@@ -116,19 +118,24 @@ void *step(void *args) {
         /* Loop through all assigned agents */
         for (int i = d->start; i < d->end; i++) {
                 agent_step(agents[i]);
+                if (!d->day)
+                        continue;
                 switch (agents[i]->status) {
                         case SUSCEPTIBLE:
-                                if (agents[i]->state->V > V_INFECTUOUS)
+                                if (agents[i]->state->V > V_INFECTUOUS) {
                                         agents[i]->status = INFECTED;
+                                        newI++;
+                                }
                                 break;
                         case INFECTED:
                                 if (agents[i]->state->V < 1e-3)
                                         agents[i]->status = RECOVERED;
                                 break;
                         case RECOVERED:
-                                if (agents[i]->state->V > V_INFECTUOUS)
+                                if (agents[i]->state->V > V_INFECTUOUS) {
                                         agents[i]->status = INFECTED;
-                                else if (agents[i]->state->A < A_RECOVERED *
+                                        newI++;
+                                } else if (agents[i]->state->A < A_RECOVERED *
                                         agents[i]->params->b_A / agents[i]->params->d_A)
                                         agents[i]->status = SUSCEPTIBLE;
                                 break;
@@ -147,13 +154,13 @@ FILE *countdata;
 FILE *averagedata;
 FILE *environmentdata;
 
-void show(double t) {
+void show(double t, bool day) {
 
-        fprintf(agentdata, "%f, ", t);
+        fprintf(agentdata, "%f", t);
         for (int i = 0; i < SHOW_N_AGENTS; i++)
                 fprintf(
                         agentdata,
-                        "%f, %f, %f, %f, %f, ",
+                        ", %f, %f, %f, %f, %f",
                         agents[i]->state->T / default_state.T,
                         agents[i]->state->I / default_state.T,
                         agents[i]->state->V / V_INFECT,
@@ -182,10 +189,14 @@ void show(double t) {
                 A += agents[i]->state->A;
         }
 
-        fprintf(countdata, "%f, ", t);
-        for (int j = 0; j < N_STATUS; j++)
-                fprintf(countdata, "%d, ", count[j]);
-        fprintf(countdata, "\n");
+        /* Only show statuses once per day */
+        if (day) {
+                fprintf(countdata, "%f", t);
+                for (int j = 0; j < N_STATUS; j++)
+                        fprintf(countdata, ", %d", count[j]);
+                fprintf(countdata, ", %d\n", newI);
+                newI = 0;
+        }
 
         fprintf(
                 averagedata,
@@ -197,9 +208,9 @@ void show(double t) {
                 A / N_AGENTS
         );
 
-        fprintf(environmentdata, "%f, ", t);
+        fprintf(environmentdata, "%f", t);
         for (int j = 0; j < N_ENVS; j++)
-                fprintf(environmentdata, "%f, ", environments[j]->Z);
+                fprintf(environmentdata, ", %f", environments[j]->Z);
         fprintf(environmentdata, "\n");
 }
 
@@ -229,7 +240,7 @@ int main(int argc, const char *argv[]) {
                 fprintf(agentdata, "Target, Infected, Viral, \"Viral (External)\", Antibodies, ");
         fprintf(agentdata, "\n");
 
-        fprintf(countdata, "Time, Susceptible, Infected, Recovered\n");
+        fprintf(countdata, "Time, Susceptible, Infected, Recovered, New Infected\n");
         fprintf(averagedata, "Time, Target, Infected, Viral, Antibodies\n");
         fprintf(environmentdata, "Time, ");
         for (int j = 0; j < N_ENVS; j++)
@@ -241,7 +252,7 @@ int main(int argc, const char *argv[]) {
         for (double t = 0.0; t <= N_DAYS; t += TIME_STEP, steps += 1) {
                 /* Output data to stdout */
                 if (steps % SHOW_EVERY == 0)
-                        show(t);
+                        show(t, (steps % STEPS_PER_DAY) == 0);
                 /* Output a brief status summary to stderr */
                 if (steps % STATUS_EVERY == 0)
                         fprintf(stderr, "Day %d\n", steps / STEPS_PER_DAY);
