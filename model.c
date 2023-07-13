@@ -154,7 +154,7 @@ FILE *countdata;
 FILE *averagedata;
 FILE *environmentdata;
 
-void show(double t, bool day) {
+bool show(double t, bool day) {
 
         fprintf(agentdata, "%f", t);
         for (int i = 0; i < SHOW_N_AGENTS; i++)
@@ -212,6 +212,8 @@ void show(double t, bool day) {
         for (int j = 0; j < N_ENVS; j++)
                 fprintf(environmentdata, ", %f", environments[j]->Z);
         fprintf(environmentdata, "\n");
+
+        return count[INFECTED] == 0;
 }
 
 int main(int argc, const char *argv[]) {
@@ -249,13 +251,14 @@ int main(int argc, const char *argv[]) {
 
         /* Step through time */
         int steps = 0;
-        for (double t = 0.0; t <= N_DAYS; t += TIME_STEP, steps += 1) {
+        bool extinct = false;
+        for (double t = 0.0; t <= N_DAYS && !extinct; t += TIME_STEP, steps += 1) {
                 /* Output data to stdout */
                 if (steps % SHOW_EVERY == 0)
-                        show(t, (steps % STEPS_PER_DAY) == 0);
+                        extinct = show(t, (steps % STEPS_PER_DAY) == 0);
                 /* Output a brief status summary to stderr */
-                if (steps % STATUS_EVERY == 0)
-                        fprintf(stderr, "Day %d\n", steps / STEPS_PER_DAY);
+                /* if (steps % STATUS_EVERY == 0) */
+                /*         fprintf(stderr, "Day %d\n", steps / STEPS_PER_DAY); */
 
                 /* Each thread deals with a subset of agents */
                 /* Calculate each agent's next state */
@@ -277,6 +280,8 @@ int main(int argc, const char *argv[]) {
                 for (int i = 0; i < N_ENVS; i++)
                         env_step(environments[i], TIME_STEP);
         }
+
+        fprintf(stderr, "Total days : %d\n", steps / STEPS_PER_DAY);
 
         fclose(agentdata);
         fclose(countdata);
