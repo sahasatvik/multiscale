@@ -20,15 +20,15 @@ typedef enum {
 #define AB_GRAPH_M0     10      // Number of vertices in initial core
 
 /* Set simulation duration and time steps */
-#define N_DAYS          200     // Number of days simulated
-#define STEPS_PER_DAY   100
+#define N_DAYS          1000    // Number of days simulated
+#define STEPS_PER_DAY   10
 #define TIME_STEP       (1.0 / STEPS_PER_DAY)
 
 /* Set probabilities, thresholds, delays */
 #define P_INFECT        4e-3    // Probability of infection on contact
 #define V_INFECT        1e0     // Viral load barrier
 #define V_INFECTUOUS    (1e2 * V_INFECT)
-#define A_RECOVERED     1e1     // Factor by which antibody level is raised in recovered
+#define A_RECOVERED     4e0     // Factor by which antibody level is raised in recovered
 #define ABDY_DELAY      3e0     // Antibody response delay, in days
 
 
@@ -61,7 +61,7 @@ params_t default_params = {
         .epsilon = 2e-1,        // Scale parameter
 
         .eta   = 5e-7,          // Transmission rate of virus from environment to host
-        .zeta  = 5e-3,          // Proportion of viral load transferred during contact
+        .zeta  = 5e-4,          // Proportion of viral load transferred during contact
 
         .v_infect = 1e0,        // Minimum viral load to break barrier
         .lambdai  = 4e-1,       // Mean viral load loss
