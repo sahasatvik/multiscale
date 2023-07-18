@@ -58,8 +58,10 @@ peaks_n <- peaks %>%
 
 peak_to_peak <- peaks %>%
                 filter(peak & (I > 1000)) %>%
-                filter(sum(peak) == 2) %>%
-                summarise(peak_to_peak = diff(t))
+                # filter(sum(peak) == 2) %>%
+                mutate(peak_to_peak = t - lag(t), n = row_number()) %>%
+                drop_na()
+
 
 heights <- df %>%
                 group_by(p, run) %>%
@@ -127,16 +129,23 @@ ggplot() +
         ) +
         ggtitle("Number of peaks grouped by p") +
         # coord_polar("y", start = 0) +
-        scale_fill_brewer(palette = "Set1")
+        scale_fill_brewer(palette = "Blues") +
+        theme_minimal()
         # facet_wrap(vars(p))
 
 ggplot() +
+        geom_boxplot(
+                data = peak_to_peak,
+                aes(x = p, y = peak_to_peak, color = as.factor(n - 1))
+        ) +
         geom_jitter(
                 data = peak_to_peak,
-                aes(x = p, y = peak_to_peak)
+                aes(x = p, y = peak_to_peak, color = as.factor(n - 1)),
+                position = position_dodge(0.75)
         ) +
         ggtitle("Peak to peak distances") +
-        scale_fill_brewer(palette = "Set1")
+        scale_fill_brewer(palette = "Set1") +
+        scale_color_brewer(palette = "Set1")
 
 ggplot() +
         geom_jitter(
