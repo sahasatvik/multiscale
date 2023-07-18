@@ -9,3 +9,12 @@ oneagent
 degree_distribution.pdf
 multirun.pdf
 peaks_*.pdf
+
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.nav
+*.snm
+*.toc
+*.synctex.gz

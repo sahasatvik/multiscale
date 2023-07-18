@@ -1,0 +1,276 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+\geometry{a4paper, bottom = 1in}
+
+\newcommand{\iv}{$^{-1}$}
+
+\title{A model for in-host viral infection dynamics}
+\author{Satvik Saha}
+\date{}
+
+\begin{document}
+    \maketitle
+
+    \section{Model descriptions}
+
+    \subsection{Agent based model}
+
+    Let $n, m \in \mathbb{N}$. For each $i \in \{1, \dots, n\}$, $j \in \{1,
+    \dots, m\}$. Consider the following system.
+
+    \begin{align}
+        \frac{dT_i}{dt} &= b -  \delta T_i - \frac{\kappa}{1 + \alpha A_i} T_iV_i, \\
+        \frac{dT^*_i}{dt} &= \frac{\kappa}{1 + \alpha A_i} T_iV_i - qT^*_i, \\
+        \frac{dV_i}{dt} &= pT^*_i - cV_i - c_A A_iV_i - X_i(t) + g\left(W_i + \sum_{j = 1}^m \eta_{ij} Z_j\right), \\
+        \frac{dA_i}{dt} &= b_A -  \delta_A A_i + \kappa_A A_i(t - \tau)V_i(t - \tau), \\\\
+        \frac{dZ_j}{dt} &= \sum_{i = 1}^n \xi_{ij} V_i - \delta_Z Z_j, \\
+        W_i(t) &= \zeta \sum_{k = 1}^n Y_{ik}(\lfloor t\rfloor) V_k(\lfloor t\rfloor), \\
+        g(x) &= x\, \mathbf{1}_{(v, \infty)}(x).
+    \end{align}
+
+    Here, we define random variables $X_i(t) \sim
+    \operatorname{Exp}(\lambda)$, $Y_{ik}(\lfloor t\rfloor) \sim
+    \operatorname{Bernoulli}(s_{ik} \, p_\text{inf})$.
+
+    ~
+
+    The parameters $\xi_{ij}, \eta_{ij}$ are to be thought of as weights
+    linking agents with their environments; the parameters $s_{ik}$ are to be
+    thought of as strengths of connections between agents forming a network.
+
+    ~
+
+    The model state is described by $(T, T^*, V, A, W, Z) \in \mathcal{S}
+    \equiv \mathbb{R}_{\geq 0}^{3n} \times \mathcal{C}_\tau \times
+    \mathcal{C}_\tau \times \mathbb{R}_{\geq 0}^{m}$, with $\mathcal{C}_\tau
+    \equiv \mathcal{C}(0, \tau)$, $T \equiv (T_1, \dots, T_n)$, and so on.
+
+    The model parameters are $(b, \delta, \kappa, q, p, c, b_A, \delta_A,
+    \kappa_A, c_A, \alpha, \tau, \delta_Z, v, \lambda, p_\text{inf}, \zeta,
+    \eta, \xi, s) \in \mathcal{P} \equiv \mathbb{R}_{\geq 0}^{17} \times
+    \mathbb{R}_{\geq 0}^{mn} \times \mathbb{R}_{\geq 0}^{mn} \times [0,
+    1]^{n\times n}$, with $\eta \equiv [\eta_{ij}]_{ij}$, $\xi \equiv
+    [\xi_{ij}]_{ij}$, and $s \equiv [s_{ik}]_{ik}$.
+
+
+    \begin{table}[h!]
+        \centering
+        \caption{Model state variables}
+        \vspace{1em}
+        \begin{tabular}{ccl} \hline\hline
+            Variable    & Units     & Interpretation \\\hline\hline
+            $T$         & cells/ml  & Concentration of target cells \\
+            $T^*$       & cells/ml  & Concentration of infected cells \\
+            $V$         & copies/ml & Concentration of viral copies \\
+            $A$         & imm/ml    & Antibody/immunity level \\
+            $W$         & copies/ml
+                                    & Contact pressure of viral copies \\
+            $Z$         & copies/m$^2$
+                                    & Environmental viral copies \\
+            \hline
+        \end{tabular}
+        \label{tab:state}
+    \end{table}
+
+    \begin{table}[h!]
+        \centering
+        \caption{Model parameters}
+        \vspace{1em}
+        \begin{tabular}{ccl} \hline\hline
+            Parameter   & Units     & Interpretation \\\hline\hline
+            $b$         & cells ml\iv day\iv
+                                    & Generation rate of target cells \\
+            $\delta$    & day\iv
+                                    & Death rate of target cells \\
+            $\kappa$    & cells\iv ml day\iv
+                                    & Infection rate of target cells \\
+            $q$         & day\iv
+                                    & Death rate of infected cells \\
+            $p$         & copies cells\iv day\iv
+                                    & Production rate of viral copies \\
+            $c$         & day\iv
+                                    & Clearance rate of viral copies \\
+            $b_A$       & imm ml\iv day\iv
+                                    & Generation rate of antibodies \\
+            $\delta_A$  & day\iv
+                                    & Clearance rate of antibodies \\
+            $\kappa_A$  & copies\iv ml day\iv
+                                    & Production rate of antibodies \\
+            $c_A$       & imm\iv ml day\iv
+                                    & Clearance rate of viral copies via antibodies \\
+            $\alpha$    & imm\iv ml
+                                    & Inhibition of viral-target contact \\
+            $\tau$      & day
+                                    & Delay in antibody production \\
+            $\delta_Z$  & day\iv
+                                    & Removal rate of viral copies \\
+            $v$         & copies ml\iv
+                                    & Entry threshold of viral concentration \\
+            $\lambda$   & copies\iv ml day
+                                    & Reciprocal of mean of stochastic viral removal \\
+            $p_\text{inf}$  & --
+                                    & Probability of viral load transfer \\
+            $\zeta$     & --
+                                    & Fraction of viral load transferred \\
+            $\eta_{ij}$ & copies ml\iv cells\iv m$^2$ day\iv
+                                    & Environment-Agent transmission rate of virus\\
+            $\xi_{ij}$  & copies\iv ml cells m$^{-2}$ day\iv
+                                    & Viral shedding rate into environment \\
+            $s_{ik}$    & --
+                                    & Strength of contact between agents \\
+            \hline
+        \end{tabular}
+        \label{tab:parameter}
+    \end{table}
+
+    ~
+
+    After choosing thresholds $V'$ and $A'$, we can count \begin{align}
+        S &= \sum_{i = 1}^n \mathbf{1}(A \leq A')\, \mathbf{1}(V \leq V') \\
+        I &= \sum_{i = 1}^n \mathbf{1}(V > V'), \\
+        R &= n - S - I.
+    \end{align}
+
+
+    \subsection{In-host submodel}
+
+    Consider the in-host model described below.
+
+    \begin{align*}
+        \frac{dT}{dt} &= b -  \delta T - \frac{\kappa}{1 + \alpha A} TV, \\
+        \frac{dT^*}{dt} &= \frac{\kappa}{1 + \alpha A} TV - qT^*, \\
+        \frac{dV}{dt} &= pT^* - cV - c_A AV, \\
+        \frac{dA}{dt} &= b_A -  \delta_A A + \kappa_A A(t - \tau)V(t - \tau).
+    \end{align*}
+
+    Solving for an equilibrium, we demand \[
+        \frac{\kappa}{1 + \alpha A} TV = b - \delta T = q T^*, \qquad
+        pT^* = (c + c_A A)V, \qquad
+        b_A - \delta_AA = -\kappa_A AV.
+    \] Thus, \[
+        \frac{p}{q}(b - \delta T) = -\frac{(c + c_A A)(b_A - \delta_A A)}{\kappa_A A},
+    \] whence \[
+        T = \frac{b}{\delta} + \frac{q(c + c_A A)(b_A - \delta_A A)}{p \delta \kappa_A A}.
+    \] Furthermore, \[
+        1 + \alpha A = \frac{\kappa TV}{b - \delta T} = -T \frac{(b_A - \delta_A A) / \kappa_A}{(b - \delta T) / \kappa},
+    \] whence \[
+        \frac{b - \delta T}{\kappa T} = - \frac{b_A - \delta_A A}{\kappa_A (1 + \alpha A)}.
+    \] Thus, \[
+        T  = \frac{q(c + c_A A)(1 + \alpha A)}{p\kappa A}.
+    \] This gives \[
+        \frac{b}{\delta} = \frac{q(c + c_A A)}{pA}\left[\frac{1 + \alpha A}{\kappa} - \frac{b_A - \delta_A A}{\delta \kappa_A}\right].
+    \] Putting $T_0 = b / \delta$, $T = b_A / \delta_A$, we have \[
+        pAT_0 = q(c + c_A A)\left[\frac{1 + \alpha A}{\kappa} - \frac{\delta_A(A_0 - A)}{\delta \kappa_A}\right],
+    \] whence \[
+        p\kappa T_0 A
+        = q(c + c_A A)\left[1 - \frac{\kappa/\delta}{\kappa_A/\delta_A}A_0 + \left(\alpha + \frac{\kappa / \delta}{\kappa_A / \delta_A}\right)A\right].
+    \] Setting $\beta = (\kappa / \delta) / (\kappa_A / \delta_A)$, $r = p /
+    q$, $\gamma = c_A / c$, we have \[
+        \kappa r T_0 A = c(1 + \gamma A)[1 - \beta A_0 + (\alpha + \beta)A].
+    \] Thus, \[
+        \gamma(\alpha + \beta)A^2 + [\gamma(1 - \beta A_0) + (\alpha + \beta) - \kappa r T_0 / c] A + (1 - \beta A_0) = 0,
+    \] or \[
+        A^2 + \left[\frac{1 - \beta A_0}{\alpha + \beta} + \frac{1}{\gamma} - \frac{\kappa r T_0}{c\gamma(\alpha + \beta)}\right] A + \frac{1 - \beta A_0}{\gamma(\alpha + \beta)} = 0.
+    \]
+
+
+    \subsection{Multiscale model}
+
+    \begin{align}
+        \frac{dS}{dt} &= -\beta_I(V, I) SI - \beta_Z(Z) SZ + \mu R, \\
+        \frac{dI}{dt} &= \beta_I(V, I) SI + \beta_Z(Z) SZ - \gamma I, \\
+        \frac{dR}{dt} &= \gamma I - \mu R, \\\\
+        \frac{dZ}{dt} &= \xi I - \delta_Z Z, \\\\
+        \epsilon \frac{dT}{dt} &= b -  \delta T - \frac{\kappa}{1 + \alpha A} TV, \\
+        \epsilon \frac{dT^*}{dt} &= \frac{\kappa}{1 + \alpha A} TV - qT^*, \\
+        \epsilon \frac{dV}{dt} &= \eta Z + pT^* - cV - c_A AV, \\
+        \epsilon \frac{dA}{dt} &= b_A -  \delta_A A + \kappa_A A(t - \tau)V(t - \tau).
+    \end{align}
+
+    Here, \[
+        \beta_I(V, I) = \frac{\beta_{I0} + C_0 V}{1 + C_1 I}, \qquad
+        \beta_Z(Z) = \frac{\beta_{Z0}}{1 + C_2 Z}.
+    \]
+
+
+    \subsection{SIRS model}
+
+    \begin{align}
+        \frac{dS}{dt} &= -\frac{\beta SI}{N} + \mu R, \\
+        \frac{dI}{dt} &= \frac{\beta SI}{N} - \gamma I, \\
+        \frac{dR}{dt} &= \gamma I - \mu R.
+    \end{align}
+
+    Here, $N = S + I + R$.
+
+
+    \section{Objectives}
+
+    \begin{enumerate}
+        \item Compare the $S, I, R$ curves with those obtained from a
+        simplified model with one agent and one environment.
+
+        \item Identify/interpret infection phases ($S$, $I$, $R$) using the
+        in-host variables ($T$, $T^*$, $V$, $A$).
+
+        \item Investigate the effects of heterogeneity in the agents and their
+        contact network. For instance,
+        \begin{enumerate}
+            \item In-host parameters may be varied across agents, forming two
+            or more groups.
+            \item Groups of agents may be vaccinated.
+        \end{enumerate}
+
+        \item Investigate the effect of the stochastic term $X_i(t)$ in the
+        in-host model.
+    \end{enumerate}
+
+
+    \section{Observations}
+
+    \begin{enumerate}
+        \item The agent based model (1.1) is capable of producing infection
+        curves with multiple waves/peaks.
+
+        \item Averaged infection curves from model (1.1) also show multiple
+        peaks; the curve up to the first peak fits well against the SIRS model
+        (1.4).
+
+        \item Individuals in model (1.1) become `infected' when a pulse is
+        applied on $W_i$. The viral load $V_i$ rapidly increases, which after
+        a short delay leads to a rapid increase in the antibody/immunity
+        $A_i$. This $V_i$ to fall sharply to zero. $A_i$ gradually drops back
+        to its baseline level. A sufficiently elevated $A_i$ confers
+        `immunity' to the individual, preventing reinfection. The probability
+        of reinfection, as a function of time since infection, can be
+        calculated.
+    \end{enumerate}
+
+
+    \begin{figure}[h!]
+    \begin{center}
+        \includegraphics[page = 2, width = \textwidth]{../multirun.pdf}
+    \end{center}
+    \caption{Infection curves, by varying infection probabilities
+    $p_\text{inf}$.}
+    \label{fig:multiruns}
+    \end{figure}
+
+
+    \begin{figure}[h!]
+    \begin{center}
+        \includegraphics[page = 4, width = \textwidth]{../multirun.pdf}
+    \end{center}
+    \caption{Number of runs (out of 100) with $n$ peaks in the infection
+    curve, by varying infection probabilities $p_\text{inf}$}
+    \label{fig:peaks}
+    \end{figure}
+
+
+\end{document}
