@@ -7,13 +7,15 @@ from scipy.optimize import curve_fit
 from scipy.integrate import odeint
 
 
-def curve(t, y0, beta, gamma, mu):
+def curve(t, y0, beta, gamma, mu, alpha):
     # g = lambda y, t: f(y, t, beta_I0 = beta_I0, C_V = C_V, epsilon = epsilon)
     # return ddeint(g, y0, t)[:, 1]
     def g(y, t):
         S, I, R = y
         N = S + I + R
-        return -beta * S * I / N + mu * R, beta * S * I / N - gamma * I, gamma * I - mu * R
+        return -beta * S * I / (N * (1 + alpha * I)) + mu * R, \
+                beta * S * I / (N * (1 + alpha * I)) - gamma * I, \
+                gamma * I - mu * R
     return odeint(g, y0, t)[:, 1]
 
 def load_curve(p, n):
@@ -46,18 +48,18 @@ def load_mean_curve(p, trials = 100, t_cut = 100):
 def show_fit(p, t_cut = 100, fig = 1):
     y, t = load_mean_curve(p, t_cut = t_cut)
 
-    def f(t, beta, gamma, mu, I0):
+    def f(t, beta, gamma, mu, alpha, I0):
         t_ = np.arange(0, t.max() + 1, 1e-2)
         y0 = (1e4 - I0, I0, 0.0)
-        sol = curve(t_, y0, beta, gamma, mu)
+        sol = curve(t_, y0, beta, gamma, mu, alpha)
         y = sol[t_ <= t.max()][::100]
         y[y == np.inf] = 0
         y[y == -np.inf] = 0
         return np.nan_to_num(y)
 
-    p0 = (3.5e-1, 1 / 8, 0, 40)
+    p0 = (3.5e-1, 1 / 8, 0, 0, 1)
 
-    popt, pcov, infodict, mesg, ier = curve_fit(f, t, y, p0 = p0, full_output = True, bounds = (0, [1, 1, 1, 1e3]))
+    popt, pcov, infodict, mesg, ier = curve_fit(f, t, y, p0 = p0, full_output = True, bounds = (0, [1, 1, 1, 1, 1e3]))
     print(p, popt)
 
     plt.figure(fig)
@@ -87,9 +89,9 @@ cutoffs = {
     2: 100,
     3: 100,
     4: 100,
-    5: 100,
-    6: 100,
-    8: 100
+    5:  60,
+    6:  50,
+    8:  40
 }
 
 coeffs = dict()
