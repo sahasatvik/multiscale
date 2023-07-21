@@ -240,22 +240,29 @@
 
         \item Averaged infection curves from model (1.1) also show multiple
         peaks; the curve up to the first peak fits well against the SIRS model
-        (1.4).
+        (1.4). Individual infection curves from model (1.1) up to the first
+        peak also fit well against model (1.4).
+
+        \item There is a narrow range of $p_\text{inf}$, with all other
+        parameters in model (1.1) fixed, in which a significant proportion of
+        infection curves display multiple prominent peaks without damping. For
+        lower $p_\text{inf}$, infection curves become more stochastic in
+        nature.
 
         \item Individuals in model (1.1) become `infected' when a pulse is
         applied on $W_i$. The viral load $V_i$ rapidly increases, which after
         a short delay leads to a rapid increase in the antibody/immunity
-        $A_i$. This $V_i$ to fall sharply to zero. $A_i$ gradually drops back
-        to its baseline level. A sufficiently elevated $A_i$ confers
-        `immunity' to the individual, preventing reinfection. The probability
-        of reinfection, as a function of time since infection, can be
-        calculated.
+        $A_i$. This forces $V_i$ to fall sharply to zero, after which $A_i$
+        gradually drops back to its baseline level. A sufficiently elevated
+        $A_i$ confers `immunity' to the individual, preventing reinfection.
+        The probability of reinfection, as a function of time since infection,
+        can be calculated.
     \end{enumerate}
 
 
     \begin{figure}[h!]
     \begin{center}
-        \includegraphics[page = 2, width = \textwidth]{../multirun.pdf}
+        \includegraphics[page = 2, width = \textwidth]{../figures/multirun.pdf}
     \end{center}
     \caption{Infection curves, by varying infection probabilities
     $p_\text{inf}$.}
@@ -265,12 +272,20 @@
 
     \begin{figure}[h!]
     \begin{center}
-        \includegraphics[page = 4, width = \textwidth]{../multirun.pdf}
+        \includegraphics[page = 4, width = \textwidth]{../figures/multirun.pdf}
     \end{center}
-    \caption{Number of runs (out of 100) with $n$ peaks in the infection
-    curve, by varying infection probabilities $p_\text{inf}$}
+    \caption{Number of runs (out of 200) with $n$ peaks in the infection
+    curve, by varying infection probabilities $p_\text{inf}$.}
     \label{fig:peaks}
     \end{figure}
 
+    \begin{figure}[h!]
+    \begin{center}
+        \includegraphics[page = 3, width = \textwidth]{../figures/multirun.pdf}
+    \end{center}
+    \caption{Distribution of epidemic durations, by varying infection
+    probabilities $p_\text{inf}$.}
+    \label{fig:durations}
+    \end{figure}
 
 \end{document}

@@ -6,10 +6,6 @@ model
 gendata
 oneagent
 
-degree_distribution.pdf
-multirun.pdf
-peaks_*.pdf
-
 *.aux
 *.fdb_latexmk
 *.fls

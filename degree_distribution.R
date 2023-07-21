@@ -2,7 +2,7 @@
 
 library(stringr)
 
-pdf("degree_distribution.pdf")
+pdf("figures/degree_distribution.pdf")
 
 dat <- read.csv2("data/network.dat")
 x   <- as.numeric(str_extract(dat[, 1], "[0-9]+"))

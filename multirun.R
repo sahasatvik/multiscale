@@ -10,7 +10,7 @@ library(zoo)
 df <- tibble(t = integer(), I = double(), run = integer(), p = double())
 
 for (p in c(2, 3, 4, 5, 6, 8)) {
-        for (i in 1:100) {
+        for (i in 1:200) {
                 filename <- sprintf("output/p%d/countdata_%03d.dat", p, i)
                 d <- read.csv(filename)
                 df <- df %>% add_row(
@@ -68,7 +68,7 @@ heights <- df %>%
                 summarise(height = max(I))
 
 
-pdf(file = "multirun.pdf", width = 16, height = 10)
+pdf(file = "figures/multirun.pdf", width = 16, height = 10)
 
 sturges <- function(x) {
         n = length(x)

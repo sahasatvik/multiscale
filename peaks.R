@@ -35,9 +35,9 @@ disp <- function(p, n, ma = 25, mm = 5, thresh = 1000) {
 
 
 for (n in c(2, 3, 4, 5, 6, 8)) {
-        pdf(file = sprintf("peaks_%d.pdf", n), width = 8, height = 6)
+        pdf(file = sprintf("figures/peaks_%d.pdf", n), width = 8, height = 6)
         print(n / 1000)
-        for (i in 1:100) {
+        for (i in 1:200) {
                 print(disp(n, i))
         }
         dev.off()
