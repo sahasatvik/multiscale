@@ -24,17 +24,53 @@ def load_curve(p, n):
     df = df.rename(columns = str.strip)
     return df[["Time", "Infected"]].to_numpy()
 
-def load_mean_curve(p, trials = 100, t_cut = 100):
+def load_curves(p, trials, t_cut = 100):
     data = list()
     tmax = 0
-    for n in range(trials):
-        data.append(load_curve(p, n + 1))
-        tmax = max(tmax, data[n].shape[0])
+    for n in trials:
+        c = load_curve(p, n)
+
+        # Discard extinctions
+        if c[:t_cut, 1].max() < 1e3:
+            continue
+        data.append(c)
+        tmax = max(tmax, c.shape[0])
 
     ys = list()
-    for n in range(trials):
-        l = data[n].shape[0]
-        ys.append(np.pad(data[n][:, 1], (0, tmax - l), mode = 'constant'))
+    for d in data:
+        l = d.shape[0]
+        ys.append(np.pad(d[:, 1], (0, tmax - l), mode = 'constant'))
+
+    return np.array(ys)
+
+
+def load_curves_aligned(p, trials, t_cut = 100):
+    ys = load_curves(p, trials, t_cut = t_cut)
+    tmax = ys.shape[1]
+
+    # Align peaks
+    imax = ys[:, :t_cut].argmax(axis = 1)
+    tmax += imax.max() - imax.min()
+
+    yss = []
+    for i in range(len(ys)):
+        yss.append(np.pad(ys[i, :], (imax.max() - imax[i], imax[i] - imax.min()), mode = 'constant'))
+
+    # for i in range(len(yss)):
+    #     plt.plot(t, yss[i])
+    # plt.plot(t, y)
+    # plt.show()
+
+    return np.array(yss)
+
+
+def load_mean_curve(p, trials, t_cut = 100, align = False):
+    if align:
+        ys = load_curves_aligned(p, trials, t_cut = 100)
+    else:
+        ys = load_curves(p, trials, t_cut = 100)
+
+    tmax = ys.shape[1]
 
     t = np.arange(0, tmax, 1.0)
     y = np.mean(ys, axis = 0)
@@ -45,8 +81,8 @@ def load_mean_curve(p, trials = 100, t_cut = 100):
     return y, t
 
 
-def show_fit(p, t_cut = 100, fig = 1):
-    y, t = load_mean_curve(p, t_cut = t_cut)
+def show_fit(p, t_cut = 100, fig = 1, trials = range(1, 101), align = False):
+    y, t = load_mean_curve(p, t_cut = t_cut, trials = trials, align = align)
 
     def f(t, beta, gamma, mu, alpha, I0):
         t_ = np.arange(0, t.max() + 1, 1e-2)
@@ -77,28 +113,21 @@ def show_fit(p, t_cut = 100, fig = 1):
 
     return popt
 
-# p0 = (1e-5, 8.0e-9, 3.0e-1)
-
-# popt, pcov, infodict, mesg, ier = curve_fit(f, t, y, bounds = ([0, 0, 1e-3], [1e-3, 1e-7, 10]), full_output = True, nan_policy = 'omit', check_finite = False)
-# print(popt, pcov, infodict, mesg, ier)
-
-
-# print(popt)
 
 cutoffs = {
-    2: 100,
-    3: 100,
+    # 2: 100,
+    3: 130,
     4: 100,
-    5:  60,
-    6:  50,
-    8:  40
+    5: 100,
+    6: 150,
+    8:  60
 }
 
 coeffs = dict()
 
 fig = 1
 for p, t_cut in cutoffs.items():
-    coeffs[p] = show_fit(p, t_cut = t_cut, fig = fig)
+    coeffs[p] = show_fit(p, t_cut = t_cut, fig = fig, align = False)
     fig += 1
 
 beta = {p: coeff[0] for p, coeff in coeffs.items()}
