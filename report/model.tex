@@ -58,6 +58,28 @@
     1]^{n\times n}$, with $\eta \equiv [\eta_{ij}]_{ij}$, $\xi \equiv
     [\xi_{ij}]_{ij}$, and $s \equiv [s_{ik}]_{ik}$.
 
+    ~
+
+    \paragraph{Simplifications:} Given $i$, let $\eta_{ij} = \eta$, $\xi_{ij}
+    = \xi$ for precisely one $j$ and $\eta_{ij}, \xi_{ij} = 0$ for the rest.
+    In other words, let each agent belong to precisely one environment.
+    Furthermore, let $s_{ik} \in \{0, 1\}$, with all $s_{ii} = 0$.
+
+    With the underlying agent-environment and agent-agent connections fixed,
+    the parameter space reduces to $\mathbb{R}_{\geq 0}^{19}$.
+
+    \paragraph{Description:} This model accommodates $n$ agents, each of which
+    belongs to one of $m$ environments. The agents also form the nodes of a
+    contact network. Each agent maintains its own in-host variables $T, T^*,
+    V, A$ which evolve over time. Each environment accumulates viral copies
+    from its member agents, which decay over time. At the start of every day,
+    each agent is stochastically assigned a subset of its contact neighbours,
+    which together with the agent's environment contribute an `external
+    pressure' of viral copies. If this crosses a threshold $v$, then the agent
+    becomes infected and experiences a rapid increase in its in-host viral
+    load $V$.
+
+
 
     \begin{table}[h!]
         \centering
@@ -137,6 +159,13 @@
         R &= n - S - I.
     \end{align}
 
+    Here, $S$ denotes the number of susceptible agents, $I$ denotes the number
+    of infectuous agents, and $R$ denotes the number of recovered agents. The
+    threshold $V'$ is chosen such that its contribution to the external
+    pressure of viral copies is enough to cross the barrier $v$. The threshold
+    $A'$ is chosen such that a typical individual with that level of
+    antibodies is immune to infection.
+
 
     \subsection{In-host submodel}
 
@@ -149,7 +178,9 @@
         \frac{dA}{dt} &= b_A -  \delta_A A + \kappa_A A(t - \tau)V(t - \tau).
     \end{align*}
 
-    Solving for an equilibrium, we demand \[
+    \paragraph{Equilibria:} Note that $(b / \delta, 0, 0, b_A / \delta_A)$ is
+    a trivial infection-free equilibrium. Solving for other equilibria, we
+    demand \[
         \frac{\kappa}{1 + \alpha A} TV = b - \delta T = q T^*, \qquad
         pT^* = (c + c_A A)V, \qquad
         b_A - \delta_AA = -\kappa_A AV.
