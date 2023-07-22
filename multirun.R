@@ -99,8 +99,9 @@ ggplot() +
         ) +
         geom_line(
                 data = averages,
-                aes(x = t, y = mean_I, group = p, color = p),
-                linewidth = 1.5
+                aes(x = t, y = mean_I, group = p),
+                color = "black",
+                linewidth = 0.75
         ) +
         ggtitle("Infection curves separated by p, with averages") +
         scale_color_brewer(palette = "Set1") +
