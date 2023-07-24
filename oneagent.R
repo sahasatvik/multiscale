@@ -4,7 +4,7 @@ library(tibble)
 library(dplyr)
 library(ggplot2)
 
-df <- read.csv("output/oneagent.dat", sep = " ")
+df <- read.csv("output/oneagent.dat", sep = "", header = FALSE)
 colnames(df) <- c("t", "T", "T*", "V", "A")
 df <- tibble(df)
 
