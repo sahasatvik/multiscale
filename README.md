@@ -27,11 +27,12 @@ produce output files indexed by integers from `START` to `END`. For example,
 `countdata_10.dat` in the `output` folder.
 
 Here, we have adjusted the parameter `P_INFECT` (probability of infection on
-contact) as $X \times 10^{-3}$ for $X \in \{2, 3, 4, 5, 6, 8\}$. For each of
-these, tweak `parameters.h` accordingly, execute `multirun.sh START END`, and
-move the output files into folders `output/pX`. Generate figures by executing
-`./multirun.R` and `./peaks.R`, tweaking the variables `trials` and `trial_p`
-to reflect the number of trials and the values of $X$.
+contact) as $X \times 10^{-3}$ for $X \in \\{2, 3, 4, 5, 6, 8\\}$. For each
+of these, tweak `parameters.h` accordingly, execute `multirun.sh START
+END`, and move the output files into folders `output/pX`. Generate figures
+by executing `./multirun.R` and `./peaks.R`, tweaking the variables
+`trials` and `trial_p` to reflect the number of trials and the values of
+$X$.
 
 ### One agent
 
