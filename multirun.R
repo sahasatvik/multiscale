@@ -7,10 +7,13 @@ library(ggplot2)
 library(RColorBrewer)
 library(zoo)
 
+trials <- 1:200
+trial_p <- c(2, 3, 4, 5, 6, 8)
+
 df <- tibble(t = integer(), I = double(), run = integer(), p = double())
 
-for (p in c(2, 3, 4, 5, 6, 8)) {
-        for (i in 1:200) {
+for (p in trial_p) {
+        for (i in trials) {
                 filename <- sprintf("output/p%d/countdata_%03d.dat", p, i)
                 d <- read.csv(filename)
                 df <- df %>% add_row(
