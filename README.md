@@ -11,42 +11,38 @@ make
 ./plot.p        # Visualize
 ```
 
-To visualize the progression of a single agent, tweak parameters in
-`oneagent.c`.
-```sh
-./oneagent > output/oneagent.dat
-./oneagent.p
-```
+Model outputs are present in the `output` folder as `.dat` files, in `csv`
+format.
 
 _Note_: Plotting currently requires `gnuplot`.
 
 Visualize the degree distribution of the generated network using
-`./degree_distribution.R`, and see `degree_distribution.pdf`.
+`./degree_distribution.R`, and see `figures/degree_distribution.pdf`.
+
+### Multiple runs
+
+The command `./multirun.sh START END` will run the model multiple times and
+produce output files indexed by integers from `START` to `END`. For example,
+`./multirun.sh 1 10` will produce files `countdata_01.dat` to
+`countdata_10.dat` in the `output` folder.
+
+Here, we have adjusted the parameter `P_INFECT` (probability of infection on
+contact) as $X \times 10^{-3}$ for $X \in \{2, 3, 4, 5, 6, 8\}$. For each of
+these, tweak `parameters.h` accordingly, execute `multirun.sh START END`, and
+move the output files into folders `output/pX`. Generate figures by executing
+`./multirun.R` and `./peaks.R`, tweaking the variables `trials` and `trial_p`
+to reflect the number of trials and the values of $X$.
+
+### One agent
+
+Tweak parameters in `oneagent.c`, then `make` and run
+`./oneagent.c > output/oneagent.dat`. Visualize using `oneagent.p`,
+or `oneagent.R` which produces `figures/oneagent.pdf`.
+
 
 ## Description
 
-Each agent $i$ has $T_i$ target cells, $`T^*_i`$ infected cells, $V_i$ viral copies, and $A_i$ antibodies. Each agent belongs to some environment $j$, with $Z_j$ viral copies. These evolve as
-```math
-\begin{align*}
-\frac{dT_i}{dt}   &= \frac{1}{\epsilon}\left( b - \frac{\kappa}{1 + \alpha A_i} V_iT_i - d\, T_i \right), \\
-\frac{dT^*_i}{dt} &= \frac{1}{\epsilon}\left( \frac{\kappa}{1 + \alpha A_i} V_iT_i - qT^*_i \right), \\
-\frac{dV_i}{dt}   &= \frac{1}{\epsilon}\left( h_i(\eta Z_j + W_i) + pT^*_i - cV_i - c_A A_iV_i \right), \\
-\frac{dA_i}{dt}   &= \frac{1}{\epsilon}\left( b_A + \kappa_A A_i(t - \tau) V_i(t - \tau) - d_A\, A_i \right).
-\end{align*}
-```
-
-Here, $h(x) = x\, \mathbb{1}(x > x_0)$ for some threshold $x_0$.
-
-If $\mathscr{I}_j$ are the indices of the agents in the $j$-th environment, then $Z_j$ gets updated over a small time interval $\Delta t$ as
-```math
-\frac{\Delta Z_j}{\Delta t} = \sum_{i \in \mathscr{I}_j} \xi_i(t) V_i - \delta Z_j.
-```
-
-Here, the shedding coefficients $\xi_i$ may depend on the stage of infection of agent $i$.
-
-_(All parameters can vary across individuals/environments; subscripts $`i, j`$ have been omitted for clarity.)_
-
-Agents form the nodes of a contact network, where edges have weights $s_{ii'}$. Once per day, the variable $W_i$ for an agent $i$ is reset to zero and updated as follows: for each neighbour $i'$ of $i$, a viral load $\zeta_j V_{i'}$ is added to $W_i$ with probability $p_\text{inf} s_{ii'}$.
+The model specification can be found in `report/model.pdf`.
 
 ## TODO
 - [ ] Implement status ($S, I, R$) and shedding dynamics based on actual viral load curves
