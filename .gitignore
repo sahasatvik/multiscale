@@ -5,6 +5,7 @@
 model
 gendata
 oneagent
+reinfection
 
 *.aux
 *.fdb_latexmk
