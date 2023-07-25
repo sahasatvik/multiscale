@@ -169,12 +169,12 @@ bool show(double t, bool day) {
                                 + agents[i]->params->eta * agents[i]->environment->Z
                         ) / V_INFECT,
                         agents[i]->state->A
-                        /* agents[i]->environment->Z */
                 );
         fprintf(agentdata, "\n");
 
         int count[N_STATUS] = { 0 };
 
+        /* Compute totals */
         double T = 0.0;
         double I = 0.0;
         double V = 0.0;
@@ -189,7 +189,7 @@ bool show(double t, bool day) {
                 A += agents[i]->state->A;
         }
 
-        /* Only show statuses once per day */
+        /* Only show status counts once per day */
         if (day) {
                 fprintf(countdata, "%f", t);
                 for (int j = 0; j < N_STATUS; j++)
@@ -283,11 +283,13 @@ int main(int argc, const char *argv[]) {
 
         fprintf(stderr, "Total days : %d\n", steps / STEPS_PER_DAY);
 
+        /* Close output files */
         fclose(agentdata);
         fclose(countdata);
         fclose(averagedata);
         fclose(environmentdata);
 
+        /* Free agents, environments */
         for (int i = 0; i < N_AGENTS; i++)
                 agent_free(agents[i]);
         for (int i = 0; i < N_ENVS; i++)
