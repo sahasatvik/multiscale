@@ -19,10 +19,23 @@
 
     \section{Model descriptions}
 
-    \subsection{Agent based model}
+    \subsection{Individual based model}
 
-    Let $n, m \in \mathbb{N}$. For each $i \in \{1, \dots, n\}$, $j \in \{1,
-    \dots, m\}$. Consider the following system.
+    This model accommodates $n$ individuals, each of which belongs to one of
+    $m$ environments. The individuals also form the nodes of a contact
+    network. Each individual maintains its own in-host variables $T, T^*, V,
+    A$ which evolve over time. Each environment accumulates viral copies from
+    its members, which decay over time. At the start of every day, each
+    individual is stochastically assigned a subset of its contact neighbours,
+    which together with the individual's environment contribute an `external
+    pressure' of viral copies. If this crosses a threshold $v$, then the
+    individual becomes infected and experiences a rapid increase in its
+    in-host viral load $V$.
+
+    ~
+
+    Let $n, m \in \mathbb{N}$. For each $i \in \{1, 2, \dots, n\}$ and $j \in
+    \{1, 2, \dots, m\}$, let
 
     \begin{align}
         \frac{dT_i}{dt} &= b -  \delta T_i - \frac{\kappa}{1 + \alpha A_i} T_iV_i, \\
@@ -31,18 +44,32 @@
         \frac{dA_i}{dt} &= b_A -  \delta_A A_i + \kappa_A A_i(t - \tau)V_i(t - \tau), \\\\
         \frac{dZ_j}{dt} &= \sum_{i = 1}^n \xi_{ij} V_i - \delta_Z Z_j, \\
         W_i(t) &= \zeta \sum_{k = 1}^n Y_{ik}(\lfloor t\rfloor) V_k(\lfloor t\rfloor), \\
-        g(x) &= x\, \mathbf{1}_{(v, \infty)}(x).
+        g(x) &= \begin{cases}
+            x, &\text{ if } x > v, \\
+            0, &\text{ if } x \leq v.
+        \end{cases}.
     \end{align}
 
     Here, we define random variables $X_i(t) \sim
-    \operatorname{Exp}(\lambda)$, $Y_{ik}(\lfloor t\rfloor) \sim
-    \operatorname{Bernoulli}(s_{ik} \, p_\text{inf})$.
+    \operatorname{Exp}(\lambda)$ drawn independently for each $t \geq 0$, and
+    $Y_{ik}(\ell) \sim \operatorname{Bernoulli}(s_{ik} \, p_\text{inf})$ drawn
+    independently for each $\ell \in \mathbb{Z}_{\geq 0}$.
 
     ~
 
     The parameters $\xi_{ij}, \eta_{ij}$ are to be thought of as weights
-    linking agents with their environments; the parameters $s_{ik}$ are to be
-    thought of as strengths of connections between agents forming a network.
+    linking individuals with their environments; the parameters $s_{ik}$ are
+    to be thought of as strengths of connections between individuals forming a
+    network.
+
+    ~
+
+    The role of the stochastic term $X_i(t)$ in the equation for $dV_i / dt$
+    is to allow the possibility of \textit{complete} removal of viral load
+    $V_i$ from an individual. This stochastic effect is prominent when $V_i
+    \sim 1/\lambda$, and becomes negligible when $V_i \gg 1 / \lambda$.  This
+    is introduced to prevent $V_i$ from `bouncing back' after an initial
+    infection.
 
     ~
 
@@ -53,31 +80,21 @@
 
     The model parameters are $(b, \delta, \kappa, q, p, c, b_A, \delta_A,
     \kappa_A, c_A, \alpha, \tau, \delta_Z, v, \lambda, p_\text{inf}, \zeta,
-    \eta, \xi, s) \in \mathcal{P} \equiv \mathbb{R}_{\geq 0}^{17} \times
-    \mathbb{R}_{\geq 0}^{mn} \times \mathbb{R}_{\geq 0}^{mn} \times [0,
-    1]^{n\times n}$, with $\eta \equiv [\eta_{ij}]_{ij}$, $\xi \equiv
-    [\xi_{ij}]_{ij}$, and $s \equiv [s_{ik}]_{ik}$.
+    \eta, \xi, s) \in \mathcal{P} \equiv \mathbb{R}_{\geq 0}^{16} \times
+    [0, 1] \times \mathbb{R}_{\geq 0}^{mn} \times \mathbb{R}_{\geq 0}^{mn}
+    \times [0, 1]^{n\times n}$, with $\eta \equiv [\eta_{ij}]_{ij}$, $\xi
+    \equiv [\xi_{ij}]_{ij}$, and $s \equiv [s_{ik}]_{ik}$.
 
     ~
 
     \paragraph{Simplifications:} Given $i$, let $\eta_{ij} = \eta$, $\xi_{ij}
     = \xi$ for precisely one $j$ and $\eta_{ij}, \xi_{ij} = 0$ for the rest.
-    In other words, let each agent belong to precisely one environment.
+    In other words, let each individual belong to precisely one environment.
     Furthermore, let $s_{ik} \in \{0, 1\}$, with all $s_{ii} = 0$.
 
-    With the underlying agent-environment and agent-agent connections fixed,
-    the parameter space reduces to $\mathbb{R}_{\geq 0}^{19}$.
-
-    \paragraph{Description:} This model accommodates $n$ agents, each of which
-    belongs to one of $m$ environments. The agents also form the nodes of a
-    contact network. Each agent maintains its own in-host variables $T, T^*,
-    V, A$ which evolve over time. Each environment accumulates viral copies
-    from its member agents, which decay over time. At the start of every day,
-    each agent is stochastically assigned a subset of its contact neighbours,
-    which together with the agent's environment contribute an `external
-    pressure' of viral copies. If this crosses a threshold $v$, then the agent
-    becomes infected and experiences a rapid increase in its in-host viral
-    load $V$.
+    With the underlying individual-environment and individual-individual
+    connections fixed, the parameter space reduces to $\mathbb{R}_{\geq
+    0}^{19}$.
 
 
 
@@ -140,12 +157,12 @@
                                     & Probability of viral load transfer \\
             $\zeta$     & --
                                     & Fraction of viral load transferred \\
-            $\eta_{ij}$ & copies ml\iv cells\iv m$^2$ day\iv
-                                    & Environment-Agent transmission rate of virus\\
-            $\xi_{ij}$  & copies\iv ml cells m$^{-2}$ day\iv
+            $\eta_{ij}$ & ml\iv m$^2$ day\iv
+                                    & Environment-Individual transmission rate of virus\\
+            $\xi_{ij}$  & ml m$^{-2}$ day\iv
                                     & Viral shedding rate into environment \\
             $s_{ik}$    & --
-                                    & Strength of contact between agents \\
+                                    & Strength of contact between individuals \\
             \hline
         \end{tabular}
         \label{tab:parameter}
@@ -159,12 +176,12 @@
         R &= n - S - I.
     \end{align}
 
-    Here, $S$ denotes the number of susceptible agents, $I$ denotes the number
-    of infectuous agents, and $R$ denotes the number of recovered agents. The
-    threshold $V'$ is chosen such that its contribution to the external
-    pressure of viral copies is enough to cross the barrier $v$. The threshold
-    $A'$ is chosen such that a typical individual with that level of
-    antibodies is immune to infection.
+    Here, $S$ denotes the number of susceptible individuals, $I$ denotes the
+    number of infectuous individuals, and $R$ denotes the number of recovered
+    individuals. The threshold $V'$ is chosen such that its contribution to
+    the external pressure of viral copies is enough to cross the barrier $v$.
+    The threshold $A'$ is chosen such that a typical individual with that
+    level of antibodies is immune to infection.
 
 
     \subsection{In-host submodel}
@@ -196,7 +213,7 @@
         T  = \frac{q(c + c_A A)(1 + \alpha A)}{p\kappa A}.
     \] This gives \[
         \frac{b}{\delta} = \frac{q(c + c_A A)}{pA}\left[\frac{1 + \alpha A}{\kappa} - \frac{b_A - \delta_A A}{\delta \kappa_A}\right].
-    \] Putting $T_0 = b / \delta$, $T = b_A / \delta_A$, we have \[
+    \] Putting $T_0 = b / \delta$, $A_0 = b_A / \delta_A$, we have \[
         pAT_0 = q(c + c_A A)\left[\frac{1 + \alpha A}{\kappa} - \frac{\delta_A(A_0 - A)}{\delta \kappa_A}\right],
     \] whence \[
         p\kappa T_0 A
@@ -245,17 +262,17 @@
 
     \begin{enumerate}
         \item Compare the $S, I, R$ curves with those obtained from a
-        simplified model with one agent and one environment.
+        simplified model with one individual and one environment.
 
         \item Identify/interpret infection phases ($S$, $I$, $R$) using the
         in-host variables ($T$, $T^*$, $V$, $A$).
 
-        \item Investigate the effects of heterogeneity in the agents and their
-        contact network. For instance,
+        \item Investigate the effects of heterogeneity in the individuals and
+        their contact network. For instance,
         \begin{enumerate}
-            \item In-host parameters may be varied across agents, forming two
-            or more groups.
-            \item Groups of agents may be vaccinated.
+            \item In-host parameters may be varied across individuals, forming
+            two or more groups.
+            \item Groups of individuals may be vaccinated.
         \end{enumerate}
 
         \item Investigate the effect of the stochastic term $X_i(t)$ in the
@@ -266,8 +283,8 @@
     \section{Observations}
 
     \begin{enumerate}
-        \item The agent based model (1.1) is capable of producing infection
-        curves with multiple waves/peaks.
+        \item The individual based model (1.1) is capable of producing
+        infection curves with multiple waves/peaks.
 
         \item Averaged infection curves from model (1.1) also show multiple
         peaks; the curve up to the first peak fits well against the SIRS model
