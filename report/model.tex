@@ -155,8 +155,8 @@
                                     & Reciprocal of mean of stochastic viral removal \\
             $p_\text{inf}$  & --
                                     & Probability of viral load transfer \\
-            $\zeta$     & --
-                                    & Fraction of viral load transferred \\
+            $\zeta$     & day\iv
+                                    & Rate of viral load transfer \\
             $\eta_{ij}$ & ml\iv m$^2$ day\iv
                                     & Environment-Individual transmission rate of virus\\
             $\xi_{ij}$  & ml m$^{-2}$ day\iv
@@ -200,21 +200,21 @@
     demand \[
         \frac{\kappa}{1 + \alpha A} TV = b - \delta T = q T^*, \qquad
         pT^* = (c + c_A A)V, \qquad
-        b_A - \delta_AA = -\kappa_A AV.
+        \delta_A A  - b_A = \kappa_A AV.
     \] Thus, \[
-        \frac{p}{q}(b - \delta T) = -\frac{(c + c_A A)(b_A - \delta_A A)}{\kappa_A A},
+        \frac{p}{q}(b - \delta T) = \frac{(c + c_A A)(\delta_A A - b_A)}{\kappa_A A},
     \] whence \[
-        T = \frac{b}{\delta} + \frac{q(c + c_A A)(b_A - \delta_A A)}{p \delta \kappa_A A}.
+        T = \frac{b}{\delta} - \frac{q(c + c_A A)(\delta_A A - b_A)}{p \delta \kappa_A A}.
     \] Furthermore, \[
-        1 + \alpha A = \frac{\kappa TV}{b - \delta T} = -T \frac{(b_A - \delta_A A) / \kappa_A}{(b - \delta T) / \kappa},
+        1 + \alpha A = \frac{\kappa TV}{b - \delta T} = T \frac{(\delta_A A - b_A) / \kappa_A}{(b - \delta T) / \kappa},
     \] whence \[
-        \frac{b - \delta T}{\kappa T} = - \frac{b_A - \delta_A A}{\kappa_A (1 + \alpha A)}.
+        \frac{b - \delta T}{\kappa T} = \frac{\delta_A A - b_A}{\kappa_A (1 + \alpha A)}.
     \] Thus, \[
         T  = \frac{q(c + c_A A)(1 + \alpha A)}{p\kappa A}.
     \] This gives \[
-        \frac{b}{\delta} = \frac{q(c + c_A A)}{pA}\left[\frac{1 + \alpha A}{\kappa} - \frac{b_A - \delta_A A}{\delta \kappa_A}\right].
+        \frac{b}{\delta} = \frac{q(c + c_A A)}{pA}\left[\frac{1 + \alpha A}{\kappa} + \frac{\delta_A A - b_A}{\delta \kappa_A}\right].
     \] Putting $T_0 = b / \delta$, $A_0 = b_A / \delta_A$, we have \[
-        pAT_0 = q(c + c_A A)\left[\frac{1 + \alpha A}{\kappa} - \frac{\delta_A(A_0 - A)}{\delta \kappa_A}\right],
+        pAT_0 = q(c + c_A A)\left[\frac{1 + \alpha A}{\kappa} + \frac{\delta_A(A - A_0)}{\delta \kappa_A}\right],
     \] whence \[
         p\kappa T_0 A
         = q(c + c_A A)\left[1 - \frac{\kappa/\delta}{\kappa_A/\delta_A}A_0 + \left(\alpha + \frac{\kappa / \delta}{\kappa_A / \delta_A}\right)A\right].
