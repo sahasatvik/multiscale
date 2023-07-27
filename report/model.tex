@@ -191,12 +191,12 @@
 
     Consider the in-host model described below.
 
-    \begin{align*}
+    \begin{align}
         \frac{dT}{dt} &= b -  \delta T - \frac{\kappa}{1 + \alpha A} TV, \\
         \frac{dT^*}{dt} &= \frac{\kappa}{1 + \alpha A} TV - qT^*, \\
         \frac{dV}{dt} &= pT^* - cV - c_A AV, \\
         \frac{dA}{dt} &= b_A -  \delta_A A + \kappa_A A(t - \tau)V(t - \tau).
-    \end{align*}
+    \end{align}
 
     \paragraph{Equilibria:} Note that $(b / \delta, 0, 0, b_A / \delta_A)$ is
     a trivial infection-free equilibrium. Solving for other equilibria, we
@@ -241,12 +241,12 @@
     \ref{model:individual} with $n = 1$, $m = 0$, i.e.\ one individual not
     tied to any environment.
 
-    \begin{align*}
+    \begin{align}
         \frac{dT}{dt} &= b -  \delta T - \frac{\kappa}{1 + \alpha A} TV, \\
         \frac{dT^*}{dt} &= \frac{\kappa}{1 + \alpha A} TV - qT^*, \\
         \frac{dV}{dt} &= pT^* - cV - c_A AV - X(t) + W(t), \\
         \frac{dA}{dt} &= b_A -  \delta_A A + \kappa_A A(t - \tau)V(t - \tau).
-    \end{align*}
+    \end{align}
 
     Here, the random variables $X(t) \sim \operatorname{Exp}(\lambda)$ are
     drawn independently for each $t \geq 0$.
