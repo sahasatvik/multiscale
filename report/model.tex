@@ -199,35 +199,44 @@
     \end{align}
 
     \paragraph{Equilibria:} Note that $(b / \delta, 0, 0, b_A / \delta_A)$ is
-    a trivial infection-free equilibrium. Solving for other equilibria, we
-    demand \[
-        \frac{\kappa}{1 + \alpha A} TV = b - \delta T = q T^*, \qquad
-        pT^* = (c + c_A A)V, \qquad
-        \delta_A A  - b_A = \kappa_A AV.
-    \] Thus, \[
+    a trivial infection-free equilibrium. In general, equilibria satisfy the
+    following equations. \begin{align}
+        \frac{\kappa}{1 + \alpha A} TV &= b - \delta T, \label{eq:equilibria1} \\
+        b - \delta T &= q T^*, \label{eq:equilibria2} \\
+        pT^* &= (c + c_A A)V, \label{eq:equilibria3} \\
+        \delta_A A - b_A &= \kappa_A AV. \label{eq:equilibria4}
+    \end{align}
+    Combining \ref{eq:equilibria2}, \ref{eq:equilibria3}, and
+    \ref{eq:equilibria4} to eliminate $T^*$ and $V$, \begin{equation}
         \frac{p}{q}(b - \delta T) = \frac{(c + c_A A)(\delta_A A - b_A)}{\kappa_A A},
-    \] whence \[
+            \label{eq:equilibriaT0}
+    \end{equation}
+    whence \begin{equation}
         T = \frac{b}{\delta} - \frac{q(c + c_A A)(\delta_A A - b_A)}{p \delta \kappa_A A}.
-    \] Furthermore, \[
+            \label{eq:equilibriaT1}
+    \end{equation}
+    Furthermore, \ref{eq:equilibria1} and \ref{eq:equilibria4} give \[
         1 + \alpha A = \frac{\kappa TV}{b - \delta T} = T \frac{(\delta_A A - b_A) / \kappa_A}{(b - \delta T) / \kappa},
     \] whence \[
         \frac{b - \delta T}{\kappa T} = \frac{\delta_A A - b_A}{\kappa_A (1 + \alpha A)}.
-    \] Thus, \[
+    \] Using \ref{eq:equilibriaT0}, \begin{equation}
         T  = \frac{q(c + c_A A)(1 + \alpha A)}{p\kappa A}.
-    \] This gives \[
+            \label{eq:equilibriaT2}
+    \end{equation}
+    Equating \ref{eq:equilibriaT1} and \ref{eq:equilibriaT2}, \[
         \frac{b}{\delta} = \frac{q(c + c_A A)}{pA}\left[\frac{1 + \alpha A}{\kappa} + \frac{\delta_A A - b_A}{\delta \kappa_A}\right].
     \] Putting $T_0 = b / \delta$, $A_0 = b_A / \delta_A$, we have \[
         pAT_0 = q(c + c_A A)\left[\frac{1 + \alpha A}{\kappa} + \frac{\delta_A(A - A_0)}{\delta \kappa_A}\right],
     \] whence \[
         p\kappa T_0 A
         = q(c + c_A A)\left[1 - \frac{\kappa/\delta}{\kappa_A/\delta_A}A_0 + \left(\alpha + \frac{\kappa / \delta}{\kappa_A / \delta_A}\right)A\right].
-    \] Setting $\beta = (\kappa / \delta) / (\kappa_A / \delta_A)$, $r = p /
-    q$, $\gamma = c_A / c$, we have \[
-        \kappa r T_0 A = c(1 + \gamma A)[1 - \beta A_0 + (\alpha + \beta)A].
+    \] Setting $\beta = (\kappa / \delta) / (\kappa_A / \delta_A)$, $\varphi =
+    p \kappa T_0 / qc = pb\kappa / qc\delta$, $\gamma = c_A / c$, we have \[
+        \varphi A = (1 + \gamma A)[1 - \beta A_0 + (\alpha + \beta)A].
     \] Thus, \[
-        \gamma(\alpha + \beta)A^2 + [\gamma(1 - \beta A_0) + (\alpha + \beta) - \kappa r T_0 / c] A + (1 - \beta A_0) = 0,
+        \gamma(\alpha + \beta)A^2 + [\gamma(1 - \beta A_0) + (\alpha + \beta) - \varphi] A + (1 - \beta A_0) = 0,
     \] or \[
-        A^2 + \left[\frac{1 - \beta A_0}{\alpha + \beta} + \frac{1}{\gamma} - \frac{\kappa r T_0}{c\gamma(\alpha + \beta)}\right] A + \frac{1 - \beta A_0}{\gamma(\alpha + \beta)} = 0.
+        A^2 + \left[\frac{1 - \beta A_0}{\alpha + \beta} + \frac{1}{\gamma} - \frac{\varphi}{\gamma(\alpha + \beta)}\right] A + \frac{1 - \beta A_0}{\gamma(\alpha + \beta)} = 0.
     \]
 
 
@@ -363,8 +372,8 @@
         infection $t_d$.  For each $t_d$, we set $W(t) = \mathbf{1}_{[10,
         11]}(t) + \mathbf{1}_{[10 + t_d, 11 + t_d]}(t)$ and count the
         proportion of runs (out of 1000) for which a second peak in $V$ is
-        observed. A second peak is characterized by $V$ crossing the level
-        $10^2$ copies/ml.
+        observed. A second peak is characterized by $V$ crossing the threshold
+        $V' = 10^2$ copies/ml.
     }
     \label{fig:reinfection}
     \end{figure}
