@@ -58,6 +58,12 @@
     $Y_{ik}(\ell) \sim \operatorname{Bernoulli}(s_{ik} \, p_\text{inf})$ drawn
     independently for each $\ell \in \mathbb{Z}_{\geq 0}$.
 
+    Note that the random functions $X_i(t)$ as well as the random variables
+    $T_{ik}(\ell)$ are completely independent of state, and thus may be
+    computed/sampled beforehand. It may help to think of a particular
+    instance/choice for these quantities to be part of the initial conditions
+    for this model.
+
     ~
 
     The parameters $\xi_{ij}, \eta_{ij}$ are to be thought of as weights
@@ -299,11 +305,13 @@
     \section{Objectives}
 
     \begin{enumerate}
-        \item Compare the $S, I, R$ curves with those obtained from a
-        simplified model with one individual and one environment.
+        \item Compare the $S, I, R$ curves from model \ref{model:individual}
+        with those obtained from the multiscale model \ref{model:multiscale}
+        and the SIRS model \ref{model:SIRS}.
 
-        \item Identify/interpret infection phases ($S$, $I$, $R$) using the
-        in-host variables ($T$, $T^*$, $V$, $A$).
+        \item Identify/interpret infection phases ($S$, $I$, $R$) in model
+        \ref{model:individual} using the in-host variables ($T$, $T^*$, $V$,
+        $A$).
 
         \item Investigate the effects of heterogeneity in the individuals and
         their contact network. For instance,
@@ -314,7 +322,7 @@
         \end{enumerate}
 
         \item Investigate the effect of the stochastic term $X_i(t)$ in the
-        in-host model.
+        in-host model \ref{model:inhost_stochastic}.
     \end{enumerate}
 
 
