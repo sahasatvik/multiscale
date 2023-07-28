@@ -333,28 +333,54 @@
 
     \begin{enumerate}
         \item The individual based model \ref{model:individual} is capable of
-        producing infection curves with multiple waves/peaks.
-
-        \item Averaged infection curves from model \ref{model:individual} also
-        show multiple peaks; the curve up to the first peak fits well against
-        the SIRS model \ref{model:SIRS}. Individual infection curves from
-        model \ref{model:individual} up to the first peak also fit well
-        against model \ref{model:SIRS}.
+        producing infection curves with multiple waves/peaks. This has been
+        illustrated in Figure~\ref{fig:multiruns}.
 
         \item There is a narrow range of $p_\text{inf}$, with all other
         parameters in model \ref{model:individual} fixed, in which a
         significant proportion of infection curves display multiple prominent
         peaks without damping. For lower $p_\text{inf}$, infection curves
-        become more stochastic in nature.
+        become more stochastic in nature. The distribution of the number of
+        peaks has been illustrated in Figure~\ref{fig:peaks}.
 
-        \item Individuals in model \ref{model:individual} become `infected'
-        when a pulse is applied on $W_i$. The viral load $V_i$ rapidly
-        increases, which after a short delay leads to a rapid increase in the
-        antibody/immunity $A_i$. This forces $V_i$ to fall sharply to zero,
-        after which $A_i$ gradually drops back to its baseline level. A
-        sufficiently elevated $A_i$ confers `immunity' to the individual,
-        preventing reinfection.  The probability of reinfection, as a function
-        of time since infection, can be calculated.
+        \item Averaged infection curves from model \ref{model:individual} also
+        show multiple peaks; the curve up to the first peak fits well against
+        the SIRS model \ref{model:SIRS}.
+
+        \item We fit the SIRS model \ref{model:SIRS} to multiple individual
+        infection curves from model \ref{model:individual} (with the same set
+        of parameters) simultaneously. The parameters $\beta, \gamma, \mu$ are
+        common, while the initial conditions $(N - I_0, I_0, 0)$ are allowed
+        to vary across different curves from \ref{model:individual}. Infection
+        curves which soon become extinct are discarded, and the remaining ones
+        are truncated up to their first peak.
+
+        The SIRS model \ref{model:SIRS} fits reasonably well against such
+        curves from model \ref{model:individual}. However, the descent from
+        the peak of infection in \ref{model:SIRS} is typically shallower than
+        that in \ref{model:individual} (where peaks look somewhat symmetric).
+
+        Keeping all parameters except for $p_\text{inf}$ in model
+        \ref{model:individual} constant and performing this fit for
+        $p_\text{inf} = x \times 10^{-3}$ for $x \in \{3, 4, 5, 6, 8\}$, we
+        see that the estimate for $\mu$ is typically zero. Furthermore, the
+        estimate for $\gamma$ is typically $1 / 7$. This conforms well with
+        the behaviour of individuals in models \ref{model:individual} and
+        \ref{model:inhost_stochastic}, whose infection period is approximately
+        7 days.
+
+        \item Individuals in models \ref{model:individual} and
+        \ref{model:inhost_stochastic} become `infected' when a pulse is
+        applied on $W$. The viral load $V$ rapidly increases, which after a
+        short delay leads to a rapid increase in the antibody/immunity $A$.
+        This forces $V$ to fall sharply to zero, after which $A$ gradually
+        drops back to its baseline level. This behaviour can be observed in
+        Figure~\ref{fig:oneagent}.
+
+        A sufficiently elevated $A$ confers `immunity' to the individual,
+        preventing reinfection. The probability of reinfection, as a function
+        of time since infection, can be calculated. This has been illustrated
+        in Figure~\ref{fig:reinfection}.
     \end{enumerate}
 
 
