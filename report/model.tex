@@ -12,6 +12,8 @@
 \numberwithin{equation}{subsection}
 
 \newcommand{\iv}{$^{-1}$}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Rnn}{\mathbb{R}_{\geq 0}}
 
 \title{A model for in-host viral infection dynamics}
 \author{Satvik Saha}
@@ -130,48 +132,49 @@
         \centering
         \caption{Parameters for model \ref{model:individual}}
         \vspace{1em}
-        \begin{tabular}{ccl} \hline\hline
-            Parameter   & Units     & Interpretation \\\hline\hline
-            $b$         & cells ml\iv day\iv
-                                    & Generation rate of target cells \\
-            $\delta$    & day\iv
-                                    & Death rate of target cells \\
-            $\kappa$    & cells\iv ml day\iv
-                                    & Infection rate of target cells \\
-            $q$         & day\iv
-                                    & Death rate of infected cells \\
-            $p$         & copies cells\iv day\iv
-                                    & Production rate of viral copies \\
-            $c$         & day\iv
-                                    & Clearance rate of viral copies \\
-            $b_A$       & imm ml\iv day\iv
-                                    & Generation rate of antibodies \\
-            $\delta_A$  & day\iv
-                                    & Clearance rate of antibodies \\
-            $\kappa_A$  & copies\iv ml day\iv
-                                    & Production rate of antibodies \\
-            $c_A$       & imm\iv ml day\iv
-                                    & Clearance rate of viral copies via antibodies \\
-            $\alpha$    & imm\iv ml
-                                    & Inhibition of viral-target contact \\
-            $\tau$      & day
-                                    & Delay in antibody production \\
-            $\delta_Z$  & day\iv
-                                    & Removal rate of viral copies \\
-            $v$         & copies ml\iv
-                                    & Entry threshold of viral concentration \\
-            $\lambda$   & copies\iv ml day
+        \begin{tabular}{cccl} \hline\hline
+            Parameter   & Domain    & Units     & Interpretation \\\hline\hline
+            $b$         & $\Rnn$    & cells ml\iv day\iv
+                                                & Generation rate of target cells \\
+            $\delta$    & $\Rnn$    & day\iv
+                                                & Death rate of target cells \\
+            $\kappa$    & $\Rnn$    & cells\iv ml day\iv
+                                                & Infection rate of target cells \\
+            $q$         & $\Rnn$    & day\iv
+                                                & Death rate of infected cells \\
+            $p$         & $\Rnn$    & copies cells\iv day\iv
+                                                & Production rate of viral copies \\
+            $c$         & $\Rnn$    & day\iv
+                                                & Clearance rate of viral copies \\
+            $b_A$       & $\Rnn$    & imm ml\iv day\iv
+                                                & Generation rate of antibodies \\
+            $\delta_A$  & $\Rnn$    & day\iv
+                                                & Clearance rate of antibodies \\
+            $\kappa_A$  & $\Rnn$    & copies\iv ml day\iv
+                                                & Production rate of antibodies \\
+            $c_A$       & $\Rnn$    & imm\iv ml day\iv
+                                                & Clearance rate of viral copies via antibodies \\
+            $\alpha$    & $\Rnn$    & imm\iv ml
+                                                & Inhibition of viral-target contact \\
+            $\tau$      & $\Rnn$    & day
+                                                & Delay in antibody production \\
+            $\delta_Z$  & $\Rnn$    & day\iv
+                                                & Removal rate of viral copies \\
+            $v$         & $\Rnn$    & copies ml\iv
+                                                & Entry threshold of viral concentration \\
+            $\lambda$   & $\Rnn$    & copies\iv ml day
                                     & Reciprocal of mean of stochastic viral removal \\
-            $p_\text{inf}$  & --
-                                    & Probability of viral load transfer \\
-            $\zeta$     & day\iv
-                                    & Rate of viral load transfer \\
-            $\eta_{ij}$ & ml\iv m$^2$ day\iv
-                                    & Environment-Individual transmission rate of virus\\
-            $\xi_{ij}$  & ml m$^{-2}$ day\iv
-                                    & Viral shedding rate into environment \\
-            $s_{ik}$    & --
+            $\zeta$     & $\Rnn$    & day\iv
+                                                & Rate of viral load transfer \\
+            $\eta_{ij}$ & $\Rnn$    & ml\iv m$^2$ day\iv
+                                                & Environment-Individual transmission rate of virus\\
+            $\xi_{ij}$  & $\Rnn$    & ml m$^{-2}$ day\iv
+                                                & Viral shedding rate into environment \\
+            $s_{ik}$    & $[0, 1]$  & --
                                     & Strength of contact between individuals \\
+            $p_\text{inf}$
+                        &$[0, 1]$   & --
+                                    & Probability of viral load transfer \\
             \hline
         \end{tabular}
         \label{tab:parameter}
