@@ -7,6 +7,9 @@
 \usepackage{graphicx}
 \usepackage{hyperref}
 
+\usepackage[backend=biber]{biblatex}
+\addbibresource{references.bib}
+
 \geometry{a4paper, bottom = 1in}
 
 \numberwithin{equation}{subsection}
@@ -336,6 +339,10 @@
         producing infection curves with multiple waves/peaks. This has been
         illustrated in Figure~\ref{fig:multiruns}.
 
+        \item The average viral load across all individuals in model
+        \ref{model:individual} is in good agreement with the infection curve
+        for a given run.
+
         \item There is a narrow range of $p_\text{inf}$, with all other
         parameters in model \ref{model:individual} fixed, in which a
         significant proportion of infection curves display multiple prominent
@@ -449,5 +456,9 @@
     }
     \label{fig:durations}
     \end{figure}
+
+    \nocite{*}
+
+    \printbibliography
 
 \end{document}
