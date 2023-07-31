@@ -23,18 +23,24 @@ Visualize the degree distribution of the generated network using
 
 ### Multiple runs
 
-The command `./multirun.sh START END` will run the model multiple times and
-produce output files indexed by integers from `START` to `END`. For example,
-`./multirun.sh 1 10` will produce files `countdata_01.dat` to
-`countdata_10.dat` in the `output` folder.
+Execute `./multirun.sh 1 200` to recreate model outputs expected by the
+scripts `multirun.R` and `peaks.R` which generate figures.
+
+The command `./multirun.sh START END` will run the model multiple times for
+different values for `P_INFECT`, and produce output files indexed by integers
+from `START` to `END`. For example, `./multirun.sh 1 10` will produce files
+`countdata_01.dat` to `countdata_10.dat` in the `output/p2` to `output/p8`
+folders.
 
 Here, we have adjusted the parameter `P_INFECT` (probability of infection on
-contact) as $X \times 10^{-3}$ for $X \in \\{2, 3, 4, 5, 6, 8\\}$. For each
-of these, tweak `parameters.h` accordingly, execute `multirun.sh START
-END`, and move the output files into folders `output/pX`. Generate figures
-by executing `./multirun.R` and `./peaks.R`, tweaking the variables
-`trials` and `trial_p` to reflect the number of trials and the values of
-$X$.
+contact) as $X \times 10^{-3}$ for $X \in \\{2, 3, 4, 5, 6, 8\\}$.
+
+Change the statement `P_INFECT=(2 3 4 5 6 8)` in `multirun.sh` to use other
+values for $X$; the corresponding output files will be placed in the
+`output/pX` folder.
+
+Tweak the variables `trials` and `trial_p` in `multirun.R` and `peaks.R` to
+reflect the number of trials and the values of $X$.
 
 ### One agent
 
