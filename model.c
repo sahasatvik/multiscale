@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <pthread.h>
+#include <unistd.h>
 
 #include "agents.h"
 #include "parameters.h"
@@ -12,6 +13,8 @@
 #define SHOW_EVERY      (STEPS_PER_DAY / 10)    // skip steps in output
 #define SHOW_N_AGENTS   3
 #define STATUS_EVERY    (10 * STEPS_PER_DAY)    // show quick status
+
+bool showstatus = false;
 
 
 agent_t *agents[N_AGENTS];
@@ -216,7 +219,35 @@ bool show(double t, bool day) {
         return count[INFECTED] == 0;
 }
 
-int main(int argc, const char *argv[]) {
+void argparse(int argc, char *argv[]) {
+        int opt;
+        while ((opt = getopt(argc, argv, "hsp:")) != -1) {
+                switch (opt) {
+                        case 's':
+                                showstatus = true;
+                                break;
+                        case 'p':
+                                P_INFECT = atof(optarg);
+                                break;
+                        case 'h':
+                        default:
+                                fprintf(
+                                        stderr,
+                                        "Usage : %s [-hs] [-p infection_probability]\n"
+                                        "    -h         Show this help message\n"
+                                        "    -s         Show status every SHOW_STATUS steps\n"
+                                        "    -p infection_probability\n"
+                                        "               Set infection probability on contact between individuals\n",
+                                        argv[0]
+                                );
+                                exit(EXIT_FAILURE);
+                }
+        }
+}
+
+int main(int argc, char *argv[]) {
+
+        argparse(argc, argv);
 
         srand(time(NULL));
 
@@ -257,8 +288,8 @@ int main(int argc, const char *argv[]) {
                 if (steps % SHOW_EVERY == 0)
                         extinct = show(t, (steps % STEPS_PER_DAY) == 0);
                 /* Output a brief status summary to stderr */
-                /* if (steps % STATUS_EVERY == 0) */
-                /*         fprintf(stderr, "Day %d\n", steps / STEPS_PER_DAY); */
+                if (showstatus && (steps % STATUS_EVERY == 0))
+                        fprintf(stderr, "Day %d\n", steps / STEPS_PER_DAY);
 
                 /* Each thread deals with a subset of agents */
                 /* Calculate each agent's next state */

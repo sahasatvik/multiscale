@@ -20,17 +20,17 @@ typedef enum {
 #define AB_GRAPH_M0     10      // Number of vertices in initial core
 
 /* Set simulation duration and time steps */
-#define N_DAYS          1000    // Number of days simulated
+#define N_DAYS          1000    // Upper limit on number of days simulated
 #define STEPS_PER_DAY   10
 #define TIME_STEP       (1.0 / STEPS_PER_DAY)
 
 /* Set probabilities, thresholds, delays */
-#define P_INFECT        4e-3    // Probability of infection on contact
 #define V_INFECT        1e0     // Viral load barrier
 #define V_INFECTUOUS    (1e2 * V_INFECT)
 #define A_RECOVERED     4e0     // Factor by which antibody level is raised in recovered
 #define ABDY_DELAY      3e0     // Antibody response delay, in days
 
+double  P_INFECT =      4e-3;   // Probability of infection on contact
 
 /* States and parameters for agents, environments */
 
