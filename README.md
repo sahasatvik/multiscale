@@ -16,6 +16,8 @@ format.
 
 _Note_: Plotting currently requires `gnuplot`.
 
+Run `./model -h` for help on more options.
+
 Visualize the degree distribution of the generated network using
 `./degree_distribution.R`, and see `figures/degree_distribution.pdf`.
 
