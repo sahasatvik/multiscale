@@ -26,6 +26,9 @@ for (p in trial_p) {
                 df <- inner_join(countdata, avgdata, by = 't')
                 df <- mutate(df, beta = newI / (S * I))
 
+                fit <- lm(I ~ V + 0, data = df)
+                print(summary(fit))
+
                 pl <- ggplot(df) +
                         geom_line(aes(x = t, y = I, color = "Infections")) +
                         geom_line(aes(x = t, y = V, color = "Viral load"))
