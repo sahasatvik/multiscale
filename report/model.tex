@@ -18,12 +18,19 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Rnn}{\mathbb{R}_{\geq 0}}
 
-\title{A model for in-host viral infection dynamics}
+\title{Combining in-host and inter-host viral infection dynamics}
 \author{Satvik Saha}
 \date{}
 
 \begin{document}
     \maketitle
+
+    \begin{abstract}
+        We propose a model for viral infection dynamics which combines in-host
+        viral dynamics on an individual level with contact based transmission.
+        We compare the infection curves produced by this model with those from
+        a simple SIRS model.
+    \end{abstract}
 
     \section{Model descriptions}
 
@@ -201,7 +208,7 @@
 
     \subsection{Simplified in-host model} \label{model:inhost}
 
-    Consider the in-host model described below.
+    Consider the in-host model described below, inspired by \cite{ciupe2017}.
 
     \begin{align}
         \frac{dT}{dt} &= b -  \delta T - \frac{\kappa}{1 + \alpha A} TV, \\
@@ -375,6 +382,8 @@
     parameters constant. The resulting infection curves have been illustrated
     in Figure~\ref{fig:multiruns}.
 
+    We use the \texttt{multirun.sh} script, which calls \texttt{model}.
+
 
     \subsection{Counting epidemic waves}
 
@@ -406,6 +415,8 @@
     The estimates of reinfection probabilities have been illustrated in
     Figure~\ref{fig:reinfection}.
 
+    We use the \texttt{reinfection} program.
+
 
     \subsection{Comparison with an SIRS model}
 
@@ -420,16 +431,19 @@
     Let $I(\beta, \gamma, \mu, I_0)$ be the solution of model
     \ref{model:SIRS}, and let $I_i$ for $i \in \{1, 2, \dots, r\}$ be
     individual infection curves from model $\ref{model:individual}$. If $I_i$
-    has time points $1, 2, \dots, t_i$, then we denote the sum of squares
+    has time points $0, 1, 2, \dots, t_i$, then we denote the sum of squares
     distance \[
         \Vert I(\beta, \gamma, \mu, I_0) - I_i \Vert^2 =
-        \sum_{t = 1}^{t_i} |I(\beta, \gamma, \mu, I_0)(t) - I_i(t)|^2.
+        \sum_{t = 0}^{t_i} |I(\beta, \gamma, \mu, I_0)(t) - I_i(t)|^2.
     \] The aforementioned fitting process refers to finding optimal $\beta,
     \gamma, \mu, I_{01}, I_{02}, \dots, I_{0r}$ which minimize \[
         \sum_{i = 1}^r \Vert I(\beta, \gamma, \mu, I_{0i}) - I_i \Vert^2 =
-        \sum_{i = 1}^r \sum_{t = 1}^{t_i} |I(\beta, \gamma, \mu, I_{0i})(t) -
+        \sum_{i = 1}^r \sum_{t = 0}^{t_i} |I(\beta, \gamma, \mu, I_{0i})(t) -
         I_i(t)|^2.
     \]
+
+    We use the \texttt{SIRS\_Fit.ipynb} notebook; figures of the fitted curves
+    can be found here.
 
 
     \section{Observations}
